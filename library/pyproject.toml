@@ -1,0 +1,13 @@
+[project]
+name = "fib_lib" 
+version = "0.1.0"
+description = "Библиотека для генерации чисел Фибоначчи"
+authors = [
+    {name = "Sofiia", email = "sofiakiosova37@gmail.com"}
+]
+dependencies = []
+license = {text = "MIT"}
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
