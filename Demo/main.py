@@ -1,25 +1,49 @@
-import sys
+# import sys
 # import os
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, request, redirect, session, jsonify
 from datetime import datetime
-
-current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(current_dir)
-sys.path.append(parent_dir)
-
-from library.fib_lib import fibonacci  
 
 app = Flask(__name__)
 
-fib_gen = fibonacci()
+app.secret_key = "solar_system_secret"
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+# сторінка входу
+@app.route("/", methods=["GET","POST"])
+def login():
 
-@app.route('/get_fib')
-def get_fib():
-    return jsonify({"number": next(fib_gen)})
+    if request.method == "POST":
+
+        nickname = request.form.get("nickname")
+
+        # для збереження ніка в сесії
+        session["user"] = nickname
+
+        # записуємо у файл
+        with open("visitors.txt","a",encoding="utf-8") as f:
+            f.write(f"{nickname} | {datetime.now()}\n")
+
+        return redirect("/menu")
+
+    return render_template("login.html")
+
+# головне меню
+@app.route("/menu")
+def menu():
+
+    if "user" not in session:
+        return redirect("/")
+
+    return render_template("index.html", user=session["user"])
+
+
+# вихід
+@app.route("/logout")
+def logout():
+
+    session.clear()
+
+    return redirect("/")
+
 
 if __name__ == "__main__":
     app.run(debug=True)

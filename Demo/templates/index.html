@@ -5,7 +5,13 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Мій космос та числа</h1>
+    <h1>Asteria Space</h1>
+    <h2>Under the cover of Asteria, amidst the glow of distant worlds, we greet you {{user}}. Are you ready to embark on a journey through time and matter?</h2>
+
+<a href="/logout">
+<button>Logout</button>
+</a>
+
     <div id="canvas-container"></div> <script src="{{ url_for('static', filename='solar3d.js') }}"></script>
 </body>
 </html>
