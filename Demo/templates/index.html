@@ -12,9 +12,17 @@
         <h2>Under the cover of Asteria, amidst the glow of distant worlds, we greet you {{user}}. Are you ready to embark on a journey through time and matter?</h2>
     </div>
 
-<a href="/logout">
-<button>Logout</button>
-</a>
+    <a href="/logout">
+        <button>Logout</button>
+    </a>
+
+    <div class="container">
+    <div class="photo">
+        <img src="{{ url_for('static', filename='image/Solar system.jpg') }}" alt="solar3d">
+    </div>
+     <div class="photo">
+        <img src="{{ url_for('static', filename='image/calcus 2.jpg') }}" alt="astro calcus">
+    </div>
 
     <div id="canvas-container"></div> <script src="{{ url_for('static', filename='solar3d.js') }}"></script>
 </body>
