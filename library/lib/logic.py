@@ -1,13 +1,12 @@
 # Підрахунок першої та другої астрономічної швидкості
 import math 
 
+G = 6.67430e-11
 
 def calculate_v1(mass, radius):
-    G = 6.67430e-11
     return math.sqrt((G*mass)/radius)
 
 def calculate_v2(mass, radius):
-    G = 6.67430e-11
     return math.sqrt((2*G*mass)/radius)
 
 # Тимчасово для тестування
