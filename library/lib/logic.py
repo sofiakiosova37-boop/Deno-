@@ -1,31 +1,31 @@
 # Підрахунок першої та другої астрономічної швидкості
 import math 
+from memoization import Memoize
+import time
 
 G = 6.67430e-11
 
 def calculate_v1(mass, radius):
-    return math.sqrt((G*mass)/radius)
+    time.sleep(2)
+    return round(math.sqrt((G*mass)/radius), 2)
 
 def calculate_v2(mass, radius):
-    return math.sqrt((2*G*mass)/radius)
+    time.sleep(2)
+    return round(math.sqrt((2*G*mass)/radius), 2)
 
 # Тимчасово для тестування
-# m = float(input("Введіть масу планети (кг): "))
-# r = float(input("Введіть радіус планети (м): "))
+m = float(input("Введіть масу планети (кг): "))
+r = float(input("Введіть радіус планети (м): "))
 
-# v1 = calculate_v1(m, r)
-# v2 = calculate_v2(m, r)
+v1 = calculate_v1(m, r)
+v2 = calculate_v2(m, r)
 
-# print(f"Перша космічна швидкість: {v1:.2f} м/с")
-# print(f"Друга космічна швидкість: {v2:.2f} м/с")
+get_v1 = Memoize(calculate_v1, max_size=20, ttl=20)
+get_v2 = Memoize(calculate_v2, max_size=20, ttl=20)
 
-# Результат
-#  python library/lib/logic.py
-# Введіть масу планети (кг): 5.97e24
-# Введіть радіус планети (м): 6371000
-# Перша космічна швидкість: 7908.36 м/с
-# Друга космічна швидкість: 11184.10 м/с
-# (.venv) PS D:\lab OP 2 sem\лаба 2> 
+print(f"Перша космічна швидкість: {v1} м/с")
+print(f"Друга космічна швидкість: {v2} м/с")
+
 
 
 
