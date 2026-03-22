@@ -17,14 +17,14 @@ def calculate_v2(mass, radius):
 m = float(input("Введіть масу планети (кг): "))
 r = float(input("Введіть радіус планети (м): "))
 
-v1 = calculate_v1(m, r)
-v2 = calculate_v2(m, r)
-
 get_v1 = Memoize(calculate_v1, max_size=20, ttl=20)
-get_v2 = Memoize(calculate_v2, max_size=20, ttl=20)
+# get_v2 = Memoize(calculate_v2, max_size=20, ttl=20)
+
+v1 = get_v1(m, r)
+# v2 = calculate_v2(m, r)
 
 print(f"Перша космічна швидкість: {v1} м/с")
-print(f"Друга космічна швидкість: {v2} м/с")
+# print(f"Друга космічна швидкість: {v2} м/с")
 
 
 
