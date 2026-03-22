@@ -45,5 +45,13 @@ def logout():
     return redirect("/")
 
 
+@app.route('/calcus')  
+def calcus():    
+    return render_template('calcus.html')
+
+
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+
