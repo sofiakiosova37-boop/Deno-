@@ -13,8 +13,8 @@ def calculate_v2(mass, radius):
     time.sleep(2)
     return round(math.sqrt((2*G*mass)/radius), 2)
 
-get_v1 = Memoize(calculate_v1, max_size=20, ttl=100)
-get_v2 = Memoize(calculate_v2, max_size=20, ttl=100)
+get_v1 = Memoize(calculate_v1, max_size=20, ttl=180) # Умови за яких результат в рамках часу -180 секуед - 3 хв та максимальний об'єм 20 планет
+get_v2 = Memoize(calculate_v2, max_size=20, ttl=180)
 
 # Тимчасово для тестування
 while True:
@@ -28,7 +28,7 @@ while True:
     print(f"Друга космічна швидкість: {v2} м/с")
 
     v12 = get_v1(m, r)
-    v22 = get_v1(m, r)
+    v22 = get_v2(m, r)
    
 
 
