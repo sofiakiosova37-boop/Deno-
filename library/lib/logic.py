@@ -14,7 +14,7 @@ def calculate_v2(mass, radius):
     return round(math.sqrt((2*G*mass)/radius), 2)
 
 # Тимчасово для тестування
-start = input("Оберіть стратегію (LRU / LFU / custom): ").strip()
+#start = input("Оберіть стратегію (LRU / LFU / custom): ").strip()
 limit = 3 
 
 get_v1 = Memoize(calculate_v1, max_size=limit, ttl=180, strategy=start) # Умови за яких результат в рамках часу -180 секуед - 3 хв та максимальний об'єм 20 планет

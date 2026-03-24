@@ -18,17 +18,23 @@ class Memoize:
         if args in self.cache:
             if self.ttl is None:
                 value, timestamp = self.cache[args] 
+                print("CACHE FOUND:", args)
                 return value
             else:
                 current_time = time.time()
                 value, timestamp = self.cache[args] 
                 if current_time - timestamp < self.ttl:
+                    print("CACHE FOUND:", args)
                     return value
                 else:
                     del self.cache[args]
+        print("CALCULATING:", args)
         result = self.func(*args)
         current_time = time.time()
         if self.max_size is not None and len(self.cache) >= self.max_size:
+             need = min(self.access_count, key=self.access_count.get)
+             del self.cache[need]
+             del self.access_count[need]
              self.cache.popitem(last=False) # LRU
         self.cache[args] = (result, current_time) 
         self.access_count[args] = self.access_count.get(args, 0) + 1 # LFU
