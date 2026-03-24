@@ -14,6 +14,7 @@ class Memoize:
         self.custom_func = custom_func # Зберігаємо функцію користувача
 
     def __call__(self, *args): #викликає об'єкт як функцію. *args (*)дозволя збирати всі передані дані разом 
+        # current_time = time.time()
         if args in self.cache:
             if self.ttl is None:
                 value, timestamp = self.cache[args] 
@@ -25,15 +26,15 @@ class Memoize:
                     return value
                 else:
                     del self.cache[args]
-
-       ''' result = self.func
+        result = self.func(*args)
         current_time = time.time()
-        cache[args]=result
-        timestamps[args]=current_time '''
+        if self.max_size is not None and len(self.cache) >= self.max_size:
+             self.cache.popitem(last=False) # LRU
+        self.cache[args] = (result, current_time) 
+        self.access_count[args] = self.access_count.get(args, 0) + 1 # LFU
+        return result
      
             
-
-
 '''def __call__(self, *args):
         now = time.time() # зчитування поточного часу під час виклику методу
         # знайти в кеші 
