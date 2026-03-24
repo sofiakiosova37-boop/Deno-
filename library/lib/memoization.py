@@ -3,7 +3,7 @@ from collections import OrderedDict #Для роботи з кешом і для
 
 class Memoize:
 
-# метод для роботи з кешом
+# метод для роботи з кешом. Це конструктор з даними, які я буду надалі використовувати
     def __init__(self, func, max_size=None, ttl=None, strategy="LRU", custom_func=None): # запис методу з параметрами, максимальний розмір кешу(кількість запитів), ttl параметр часу(за замовчеванням обмеження немає)
         self.func = func # Функція, яку ми обгортаємо
         self.cache = OrderedDict() # масив/список з кешом, Сховище. Ключи - аргументи функції
@@ -13,8 +13,25 @@ class Memoize:
         self.strategy = strategy # Зберігаємо обрану стратегію
         self.custom_func = custom_func # Зберігаємо функцію користувача
 
-    def __call__(self, *args):
+    def __call__(self, *args, **kwds): #викликає об'єкт як функцію. *args (*)дозволя збирати всі передані дані разом 
+        if args in self.cache:
+            if self.ttl is None:
+                return cache[args]
+            else:
+                current_time = time.time()
+                self.cache[args]=
+
+       ''' result = self.func
+        current_time = time.time()
+        cache[args]=result
+        timestamps[args]=current_time '''
+     
+            
+
+
+'''def __call__(self, *args):
         now = time.time() # зчитування поточного часу під час виклику методу
+        # знайти в кеші 
         if args in self.cache: # чи є потрібний аргумент в списку кешу / чи збережений в пам'яті, тобто чи такий аргумент викликався раніше
             value, timestamp = self.cache[args] 
             if self.ttl is None or (now - timestamp) < self.ttl: # Або час невизначений або Різниця поточного та останнього менше ніж заданий термін оновлення, то йде переміщення
@@ -41,4 +58,4 @@ class Memoize:
                 self.cache.popitem(last=False) # видалення останнього значення, коли в масиві більше даних. Досягаємо мети реалізації LRU 
         self.cache[args] = (result, now) # відбувається сортування даних та перезапис з урахуванням нових даних. Те що було 4 стане 5
         self.access_count[args] = self.access_count.get(args, 0) + 1
-        return result
+        return result '''

@@ -21,19 +21,21 @@ get_v1 = Memoize(calculate_v1, max_size=limit, ttl=180, strategy=start) # Умо
 get_v2 = Memoize(calculate_v2, max_size=limit, ttl=180, strategy=start)
 
 while True:
-    print(f"\nПоточний кеш: {list(get_v1.cache.keys())}")
+    print(f"\nПоточний кеш:{len(get_v1.cache)}/{limit}")
     m = float(input("Введіть масу планети (кг): "))
     r = float(input("Введіть радіус планети (м): "))
 
     start_time = time.time()
     v1 = get_v1(m, r)
-    end_time = time.time()
+    v2 = get_v2(m, r)
+    duration = time.time() - start_time
 
     # v1 = get_v1(m, r)
     # v2 = get_v2(m, r)
 
-    print(f"Перша космічна швидкість: {v1} м/с (Час виконання: {end_time - start_time:.2f} сек)")
-    print(f"Друга космічна швидкість: {v2} м/с (Час виконання: {end_time - start_time:.2f} сек)")
+    print(f"Перша космічна швидкість: {v1} м/с ")
+    print(f"Друга космічна швидкість: {v2} м/с ")
+    print(f"Час виконання: {duration:.2f} сек")
 
     # v12 = get_v1(m, r)
     # v22 = get_v2(m, r)
