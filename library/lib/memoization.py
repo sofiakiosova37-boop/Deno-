@@ -13,13 +13,18 @@ class Memoize:
         self.strategy = strategy # Зберігаємо обрану стратегію
         self.custom_func = custom_func # Зберігаємо функцію користувача
 
-    def __call__(self, *args, **kwds): #викликає об'єкт як функцію. *args (*)дозволя збирати всі передані дані разом 
+    def __call__(self, *args): #викликає об'єкт як функцію. *args (*)дозволя збирати всі передані дані разом 
         if args in self.cache:
             if self.ttl is None:
-                return cache[args]
+                value, timestamp = self.cache[args] 
+                return value
             else:
                 current_time = time.time()
-                self.cache[args]=
+                value, timestamp = self.cache[args] 
+                if current_time - timestamp < self.ttl:
+                    return value
+                else:
+                    del self.cache[args]
 
        ''' result = self.func
         current_time = time.time()
