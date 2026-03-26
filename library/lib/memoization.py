@@ -1,45 +1,24 @@
 import time
 from collections import OrderedDict #Для роботи з кешом і для реалізації LRU
 
-class Memoize:
-
+class LRU:
 # метод для роботи з кешом. Це конструктор з даними, які я буду надалі використовувати
-    def __init__(self, func, max_size=None, ttl=None, strategy="LRU", custom_func=None): # запис методу з параметрами, максимальний розмір кешу(кількість запитів), ttl параметр часу(за замовчеванням обмеження немає)
+    def __init__(self, func, max_size=None, ttl=None): # запис методу з параметрами, максимальний розмір кешу(кількість запитів), ttl параметр часу(за замовчеванням обмеження немає)
         self.func = func # Функція, яку ми обгортаємо
         self.cache = OrderedDict() # масив/список з кешом, Сховище. Ключи - аргументи функції
         self.max_size = max_size # Ліміт на кількість записів у кеші.
         self.ttl = ttl  # ttl — Time To Live, запису в секундах.
-        self.access_count = {} # Словник для підрахунку того, скільки разів ми зверталися до конкретного результату.
-        self.strategy = strategy # Зберігаємо обрану стратегію
-        self.custom_func = custom_func # Зберігаємо функцію користувача
 
-    def __call__(self, *args): #викликає об'єкт як функцію. *args (*)дозволя збирати всі передані дані разом 
-        # current_time = time.time()
-        if args in self.cache:
-            if self.ttl is None:
-                value, timestamp = self.cache[args] 
-                print("CACHE FOUND:", args)
-                return value
-            else:
-                current_time = time.time()
-                value, timestamp = self.cache[args] 
-                if current_time - timestamp < self.ttl:
-                    print("CACHE FOUND:", args)
-                    return value
-                else:
-                    del self.cache[args]
-        print("CALCULATING:", args)
-        result = self.func(*args)
-        current_time = time.time()
-        if self.max_size is not None and len(self.cache) >= self.max_size:
-             need = min(self.access_count, key=self.access_count.get)
-             del self.cache[need]
-             del self.access_count[need]
-             self.cache.popitem(last=False) # LRU
-        self.cache[args] = (result, current_time) 
-        self.access_count[args] = self.access_count.get(args, 0) + 1 # LFU
-        return result
-     
+
+class LFU:
+    def __init__(self, func, max_size=None, ttl=None):
+        self.func = func
+        self.max_size = max_size
+        self.ttl = ttl
+
+
+
+
             
 '''def __call__(self, *args):
         now = time.time() # зчитування поточного часу під час виклику методу

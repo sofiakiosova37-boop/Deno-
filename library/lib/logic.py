@@ -1,6 +1,6 @@
 # Підрахунок першої та другої астрономічної швидкості
 import math 
-from memoization import Memoize
+from memoization import LFU
 import time
 
 G = 6.67430e-11
@@ -15,10 +15,10 @@ def calculate_v2(mass, radius):
 
 # Тимчасово для тестування
 #start = input("Оберіть стратегію (LRU / LFU / custom): ").strip()
-limit = 3 
+limit = 10
 
-get_v1 = Memoize(calculate_v1, max_size=limit, ttl=180) # Умови за яких результат в рамках часу -180 секуед - 3 хв та максимальний об'єм 20 планет
-get_v2 = Memoize(calculate_v2, max_size=limit, ttl=180)
+get_v1 = Memoize(calculate_v1, max_size=limit, ttl=300) # Умови за яких результат в рамках часу -180 секуед - 3 хв та максимальний об'єм 20 планет
+get_v2 = Memoize(calculate_v2, max_size=limit, ttl=300)
 
 while True:
     print(f"\nПоточний кеш:{len(get_v1.cache)}/{limit}")
