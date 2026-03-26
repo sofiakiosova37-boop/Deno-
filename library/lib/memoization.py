@@ -10,12 +10,11 @@ class LRU:
         self.ttl = ttl  # ttl — Time To Live, запису в секундах.
     
     def put(self, key, value):
-          if len(self.cache) < self.max_size:
-              self.cache[key] = value
-          else:
-              first_key = self.cache()[0]
-              del self.cache[first_key]
-              self.cache[key] = value
+          if key in self.cache:
+              self.cache.move_to_end(key)
+          self.cache[key] = value
+          if len(self.cache) > self.max_size:
+              self.cache.popitem(last=False)
               
     def get(self, key):
         if key not in self.cache:
