@@ -8,6 +8,13 @@ class LRU:
         self.cache = OrderedDict() # масив/список з кешом, Сховище. Ключи - аргументи функції
         self.max_size = max_size # Ліміт на кількість записів у кеші.
         self.ttl = ttl  # ttl — Time To Live, запису в секундах.
+    
+    def put(self, key, value):
+        if key in self.cache:
+            self.cache.move_to_end(key)
+        self.cache[key] = value
+        if len(self.cache) > self.max_size:
+            self.cache.popitem(last=False)
 
 
 class LFU:

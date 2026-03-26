@@ -1,6 +1,7 @@
 # Підрахунок першої та другої астрономічної швидкості
 import math 
 from memoization import LFU
+from memoization import LRU
 import time
 
 G = 6.67430e-11
