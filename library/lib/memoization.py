@@ -26,8 +26,11 @@ class LRU:
           if key in self.cache:
               self.cache.move_to_end(key)
           self.cache[key] = value
+          self.timestamps[key] = time.time()
           if len(self.cache) > self.max_size:
-              self.cache.popitem(last=False)
+              oldest_key, _ = self.cache.popitem(last=False)
+              if oldest_key in self.timestamps:
+                del self.timestamps[oldest_key]
               
     
 class LFU:
