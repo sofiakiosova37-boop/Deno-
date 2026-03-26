@@ -13,12 +13,11 @@ class LRU:
     def get(self, key):
         if key not in self.cache:
             return None
-        if time.time() is not None:
+        if self.ttl is not None:
             if time.time() - self.timestamps[key] > self.ttl:
                 del self.cache[key]
                 del self.timestamps[key]
                 return None
-        else:
             self.cache.move_to_end(key)
             return self.cache[key]
     
@@ -27,7 +26,7 @@ class LRU:
               self.cache.move_to_end(key)
           self.cache[key] = value
           self.timestamps[key] = time.time()
-          if len(self.cache) > self.max_size:
+          if self.max_size and len(self.cache) > self.max_size:
               oldest_key, _ = self.cache.popitem(last=False)
               if oldest_key in self.timestamps:
                 del self.timestamps[oldest_key]
