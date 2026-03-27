@@ -43,6 +43,13 @@ while True:
     print(f"Друга космічна швидкість: {v2} м/с ")
     print(f"Час виконання: {duration:.2f} сек")
 
+    meta1 = get_v1.metadata.get(key)
+    meta2 = get_v2.metadata.get(key)
+    if meta1 and meta2:
+        print(f"--- Статистика кешу для цієї планети ---")
+        print(f"Кількість зчитувань (counts): Зчитувань V1: {meta1['count']} | Зчитувань V2: {meta2['count']}")
+        print(f"Останнє оновлення часу: {time.ctime(meta1['timestamp'])}")
+
    
 
 
