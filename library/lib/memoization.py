@@ -4,32 +4,33 @@ from collections import OrderedDict #Для роботи з кешом і для
 class LRU:
 # метод для роботи з кешом. Це конструктор з даними, які я буду надалі використовувати
     def __init__(self, func, max_size=None, ttl=None): # запис методу з параметрами, максимальний розмір кешу(кількість запитів), ttl параметр часу(за замовчеванням обмеження немає)
-        self.func = func # Функція, яку ми обгортаємо
+        self.func = func # Функція, яку ми обгортаємо -- для використання в коді з обрахуванням
         self.cache = OrderedDict() # масив/список з кешом, Сховище. Ключи - аргументи функції
         self.max_size = max_size # Ліміт на кількість записів у кеші.
         self.ttl = ttl  # ttl — Time To Live, запису в секундах.
-        self.timestamps = {} # time of adding
+        self.timestamps = {} # time of adding. Фігурні скоюки, бо це Dictionary, він працює за принципом "Ключ — Значення"
 
     def get(self, key):
-        if key not in self.cache:
-            return None
-        if self.ttl is not None:
-            if time.time() - self.timestamps[key] > self.ttl:
-                del self.cache[key]
-                del self.timestamps[key]
-                return None
-            self.cache.move_to_end(key)
-            return self.cache[key]
+        if key not in self.cache: #  перевірка чи є ключ в кеші, точніше випадок, коли його нема
+            return None # тоді якщо йього ключа немає, програма обрахувань дасть змогу ввести та обчисли свої параметри
+        if self.ttl is not None: # перевірка чи взагалі є якійсь обмеження в часі. Бо якщо час None, то ця перевірка не потрібна
+            if time.time() - self.timestamps[key] > self.ttl: # перевірка, чи не перевищили час перебування в кеші певні дані. Умовно зараз 13.10, а ми ввели початкові дані в 13.00 і от ці 10 хвилин різниці, тобто чи вони більші за вказане ттл чи ні
+                del self.cache[key] # якщо запис застарів ми видаляємо його
+                del self.timestamps[key] # і видаляємо час його введеня 
+                return None # програма починає все рахувати знову
+            # наступні рядки спрацьовують лише за умов, якщо час ще не вийшов. Також ми можемо не використовувати else бо return його замінює. Це виходить Guard Clause
+            self.cache.move_to_end(key) # переставляємо дані в кінець. тут круглі дужки бо це метод
+            return self.cache[key] # віддаємо результат миттєво. Квадратні дужки це як доступ до конкретного елемента словника
     
-    def put(self, key, value):
-          if key in self.cache:
-              self.cache.move_to_end(key)
-          self.cache[key] = value
-          self.timestamps[key] = time.time()
-          if self.max_size and len(self.cache) > self.max_size:
-              oldest_key, _ = self.cache.popitem(last=False)
-              if oldest_key in self.timestamps:
-                del self.timestamps[oldest_key]
+    def put(self, key, value): # метод для обробки нових данних
+          if key in self.cache: #  перевірка чи є ці дані в кеші
+              self.cache.move_to_end(key) # якщо так, то переміщюємо в кінець. Умовно було 2 стало 3
+          self.cache[key] = value # результат зберігається в кеші
+          self.timestamps[key] = time.time() # записуємо поточний час збереження(вводу даних)
+          if self.max_size and len(self.cache) > self.max_size: #  перевірка ліміту на кількість. Якщо об'єктів 7, а ліміт 6 то
+              oldest_key, _ = self.cache.popitem(last=False) # відбувається видалення найстарішого елементу(тобто того, який був введений найпершим). Значення самих підрахунків нам не цікаві, тому ми їх упускаємо і записуємо у вигляді прочерка, це потрібно бо метод popitem повертає ключ-значення
+              if oldest_key in self.timestamps: 
+                del self.timestamps[oldest_key] # тут ми видаляємо час, коли данні були введені
               
     
 class LFU:
