@@ -10,7 +10,7 @@ class LRU:
         self.ttl = ttl  # ttl — Time To Live, запису в секундах.
         self.timestamps = {} # time of adding. Фігурні скоюки, бо це Dictionary, він працює за принципом "Ключ — Значення"
 
-    def get(self, key):
+    def get(self, key): # метод для пошуку вже обрахованих данних
         if key not in self.cache: #  перевірка чи є ключ в кеші, точніше випадок, коли його нема
             return None # тоді якщо йього ключа немає, програма обрахувань дасть змогу ввести та обчисли свої параметри
         if self.ttl is not None: # перевірка чи взагалі є якійсь обмеження в часі. Бо якщо час None, то ця перевірка не потрібна
@@ -27,7 +27,8 @@ class LRU:
               self.cache.move_to_end(key) # якщо так, то переміщюємо в кінець. Умовно було 2 стало 3
           self.cache[key] = value # результат зберігається в кеші
           self.timestamps[key] = time.time() # записуємо поточний час збереження(вводу даних)
-          if self.max_size and len(self.cache) > self.max_size: #  перевірка ліміту на кількість. Якщо об'єктів 7, а ліміт 6 то
+          if self.max_size is not None:
+            if len(self.cache) > self.max_size: #  перевірка ліміту на кількість. Якщо об'єктів 7, а ліміт 6 то
               oldest_key, _ = self.cache.popitem(last=False) # відбувається видалення найстарішого елементу(тобто того, який був введений найпершим). Значення самих підрахунків нам не цікаві, тому ми їх упускаємо і записуємо у вигляді прочерка, це потрібно бо метод popitem повертає ключ-значення
               if oldest_key in self.timestamps: 
                 del self.timestamps[oldest_key] # тут ми видаляємо час, коли данні були введені
@@ -38,3 +39,14 @@ class LFU:
         self.func = func
         self.max_size = max_size
         self.ttl = ttl
+        self.cache = {}
+        self.frequencies = {}  # Лічильник для кількості викликів
+        self.timestamps = {}
+
+    def get(self, key):
+        if key not in self.cache:
+            return None
+    
+
+    def put(self, key, value):
+    
