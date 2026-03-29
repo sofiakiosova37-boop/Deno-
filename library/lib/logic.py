@@ -1,7 +1,7 @@
 # Підрахунок першої та другої астрономічної швидкості
 import math 
 #from memoization import LFU
-from memoization import LRU
+from library.lib.my_cache import LRU
 import time
 
 G = 6.67430e-11
@@ -20,35 +20,36 @@ limit = 5
 get_v1 = LRU(calculate_v1, max_size=limit, ttl=300) 
 get_v2 = LRU(calculate_v2, max_size=limit, ttl=300)
 
-while True:
-    print(f"\nПоточний кеш:{len(get_v1.cache)}/{limit}") 
-    m = float(input("Введіть масу планети (кг): "))
-    r = float(input("Введіть радіус планети (м): "))
+if __name__ == "__main__":
+    while True:
+        print(f"\nПоточний кеш:{len(get_v1.cache)}/{limit}") 
+        m = float(input("Введіть масу планети (кг): "))
+        r = float(input("Введіть радіус планети (м): "))
 
-    start_time = time.time() 
-    key = (m, r) 
-    v1 = get_v1.get(key)
-    if v1 is None: 
-        v1 = calculate_v1(m, r)
-        get_v1.put(key, v1) 
+        start_time = time.time() 
+        key = (m, r) 
+        v1 = get_v1.get(key)
+        if v1 is None: 
+            v1 = calculate_v1(m, r)
+            get_v1.put(key, v1) 
 
-    v2 = get_v2.get(key)
-    if v2 is None:
-        v2 = calculate_v2(m, r)
-        get_v2.put(key, v2)
+        v2 = get_v2.get(key)
+        if v2 is None:
+            v2 = calculate_v2(m, r)
+            get_v2.put(key, v2)
 
-    duration = time.time() - start_time
+        duration = time.time() - start_time
 
-    print(f"Перша космічна швидкість: {v1} м/с ")
-    print(f"Друга космічна швидкість: {v2} м/с ")
-    print(f"Час виконання: {duration:.2f} сек")
+        print(f"Перша космічна швидкість: {v1} м/с ")
+        print(f"Друга космічна швидкість: {v2} м/с ")
+        print(f"Час виконання: {duration:.2f} сек") 
 
-    meta1 = get_v1.metadata.get(key)
-    meta2 = get_v2.metadata.get(key)
-    if meta1 and meta2:
-        print(f"--- Статистика кешу для цієї планети ---")
-        print(f"Кількість зчитувань (counts): Зчитувань V1: {meta1['count']} | Зчитувань V2: {meta2['count']}")
-        print(f"Останнє оновлення часу: {time.ctime(meta1['timestamp'])}")
+        meta1 = get_v1.metadata.get(key)
+        meta2 = get_v2.metadata.get(key)
+        if meta1 and meta2:
+            print(f"--- Статистика кешу для цієї планети ---")
+            print(f"Кількість зчитувань (counts): Зчитувань V1: {meta1['count']} | Зчитувань V2: {meta2['count']}")
+            print(f"Останнє оновлення часу: {time.ctime(meta1['timestamp'])}")
 
    
 

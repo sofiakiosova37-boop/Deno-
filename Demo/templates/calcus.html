@@ -1,12 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Solar 3D & Fibonacci</title>
+    <title>Калькулятор швидкостей</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class = "Title">
         <h1>Asteria Space</h1>
+        <h1>Розрахунок космічних швидкостей</h1>
     </div>
+    <form method="POST">
+        <input type="text" name="mass" placeholder="Маса планети (кг)" required>
+        <input type="text" name="radius" placeholder="Радіус планети (м)" required>
+        <button type="submit">Розрахувати</button>
+    </form>
+
+    {% if result %}
+        {% if result is string %}
+            <p style="color: red;">{{ result }}</p>
+        {% else %}
+            <h3>Результати для Маси: {{ result.mass }} та Радіуса: {{ result.radius }}</h3>
+            <p><strong>Перша космічна швидкість:</strong> {{ result.v1 }} м/с</p>
+            <p><strong>Друга космічна швидкість:</strong> {{ result.v2 }} м/с</p>
+        {% endif %}
+    {% endif %}
+
+    <br>
+    <a href="/menu">Назад в меню</a>
 </body>
 </html>
