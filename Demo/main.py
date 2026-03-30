@@ -30,9 +30,15 @@ def menu():
 def logout():
     session.clear()
     return redirect("/")
+
 @app.route('/calcus')  
 def calcus():    
     return render_template('calcus.html')
+
+@app.route('/solar')  
+def solar():
+    return render_template('solar.html')
+
 if __name__ == "__main__":
     app.run(debug=True)
 
