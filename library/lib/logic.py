@@ -1,6 +1,5 @@
 # Підрахунок першої та другої астрономічної швидкості
 import math 
-#from memoization import LFU
 from library.lib.my_cache import LRU
 import time
 
