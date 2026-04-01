@@ -39,8 +39,12 @@ def solar():
     return render_template('solar.html')
 
 @app.route('/diary')  
-def solar():
+def diary():
     return render_template('diary.html')
+
+@app.route('/transit')  
+def transit():
+    return render_template('transit.html')
 
 if __name__ == "__main__":
     app.run(debug=True)

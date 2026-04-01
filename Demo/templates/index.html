@@ -34,6 +34,24 @@
                 <button class="button">Go to Calcus</button>
              </a> 
         </div>
+
+         <div class="photo-item">
+            <div class="photo">
+                <img src="{{ url_for('static', filename='image/observation2.jpg') }}" alt="astro calcus">
+            </div>
+            <a href="{{ url_for('diary') }}">
+                <button class="button">Go to Observations</button>
+             </a> 
+        </div>
+
+        <div class="photo-item">
+            <div class="photo">
+                <img src="{{ url_for('static', filename='image/transit.jpg') }}" alt="astro calcus">
+            </div>
+            <a href="{{ url_for('transit') }}">
+                <button class="button">Go to exoplanet detection</button>
+             </a> 
+        </div>
     </div>
 </body>
 </html>
