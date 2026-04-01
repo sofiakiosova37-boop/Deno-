@@ -38,6 +38,10 @@ def logout():
 def solar():
     return render_template('solar.html')
 
+@app.route('/diary')  
+def solar():
+    return render_template('diary.html')
+
 if __name__ == "__main__":
     app.run(debug=True)
 
