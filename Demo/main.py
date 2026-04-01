@@ -2,10 +2,13 @@ import sys
 import os
 from flask import Flask, render_template, request, redirect, session, jsonify
 from datetime import datetime
+from calcus import calcus_bp
 
 # login
 app = Flask(__name__)
 app.secret_key = "solar_system_secret"
+
+app.register_blueprint(calcus_bp)
 # сторінка входу
 @app.route("/", methods=["GET","POST"])
 def login():
@@ -30,10 +33,6 @@ def menu():
 def logout():
     session.clear()
     return redirect("/")
-
-@app.route('/calcus')  
-def calcus():    
-    return render_template('calcus.html')
 
 @app.route('/solar')  
 def solar():

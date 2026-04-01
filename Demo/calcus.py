@@ -1,6 +1,11 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from flask import Blueprint, render_template, request, redirect, session
 from library.lib.logic import get_v1, get_v2, calculate_v1, calculate_v2
 
-@app.route('/calcus', methods=['GET', 'POST'])
+calcus_bp = Blueprint('calcus_bp', __name__)
+@calcus_bp.route('/calcus', methods=['GET', 'POST'])
 def calcus():
     if "user" not in session:
         return redirect("/")
