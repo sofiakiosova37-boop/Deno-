@@ -1,5 +1,4 @@
 import time
-
 class SpaceObject:
     def __init__(self, name, body_type, magnitude, timestamp, ra, dec):
         self.name = name
@@ -11,21 +10,30 @@ class SpaceObject:
         self.dec = dec # широта
         self.timestamp = time.time()
 
-current_time = 0
+class BiDirectionalPriorityQueue:
+    def __init__(self):
+        self._elements = []
 
-elements = [
-        SpaceObject("Sirius", "Star", -1.46, 1, 6.75, -16.7),
-        SpaceObject("Jupiter", "Planet", -2.50, 2, 18.5, -23.0),
-        SpaceObject("Aldebaran", "Star", +0.85, 3, 4.60, +16.5),
-        SpaceObject("Cassiopeia", "Constellation", +2.00, 4, 1.00, +60.0),
-        SpaceObject("Mars", "Planet", -0.50, 5, 15.2, -18.0),
-    ]
+def enqueue(self, obj):
+    obj.priority = self._calculate_priority(obj)
+    self._elements.append(obj)
+    print(f"-> Додано: {obj.name}")
 
-for star in elements:
-    star.priority = 10 - star.magnitude
-    if star.dec > 50:
-        star.priority += 5
+# Розрахунок пріорітету
+def _calculate_priority(self, obj):
+    priority = 10 - obj.magnitude
+    if obj.dec > 50:
+        priority += 5
+    return priority
 
+queue = BiDirectionalPriorityQueue()
+queue.enqueue(SpaceObject("Sirius", "Star", -1.46, 1, 6.75, -16.7))
+queue.enqueue(SpaceObject("Jupiter", "Planet", -2.50, 2, 18.5, -23.0))
+queue.enqueue(SpaceObject("Aldebaran", "Star", +0.85, 3, 4.60, +16.5))
+queue.enqueue(SpaceObject("Cassiopeia", "Constellation", +2.00, 4, 1.00, +60.0))
+queue.enqueue(SpaceObject("Mars", "Planet", -0.50, 5, 15.2, -18.0))
+
+"""
 best_object = max(elements, key=lambda x: x.priority)
 worst_object = min(elements, key=lambda x: x.priority)
 print(f"Найкращий для спостереження:", best_object.name)
@@ -42,3 +50,4 @@ print(f"Зараз у черзі залишилося об'єктів: {len(elem
 
 for obj in elements:
     print(f"- {obj.name} (Тип: {obj.body_type}, Пріоритет: {obj.priority:.2f})")
+    """
