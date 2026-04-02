@@ -26,17 +26,18 @@ def enqueue(self, obj):
     self._elements.append(obj)
     print(f"-> Додано: {obj.name}")
 
+def display(self):
+    print("\nПоточна черга:")
+    for obj in self.elements:
+        print(f"- {obj.name} (Тип: {obj.body_type}, Пріоритет: {obj.priority:.2f})")
+
 queue = BiDirectionalPriorityQueue()
 queue.enqueue(SpaceObject("Sirius", "Star", -1.46, 1, 6.75, -16.7))
 queue.enqueue(SpaceObject("Jupiter", "Planet", -2.50, 2, 18.5, -23.0))
 queue.enqueue(SpaceObject("Aldebaran", "Star", +0.85, 3, 4.60, +16.5))
 queue.enqueue(SpaceObject("Cassiopeia", "Constellation", +2.00, 4, 1.00, +60.0))
 queue.enqueue(SpaceObject("Mars", "Planet", -0.50, 5, 15.2, -18.0))
-
-def display(self):
-    print("\nПоточна черга:")
-    for obj in self.elements:
-        print(f"Об'єкт: {obj.name}, Пріоритет: {obj.priority}")
+queue.display()
 
 """
 best_object = max(elements, key=lambda x: x.priority)
