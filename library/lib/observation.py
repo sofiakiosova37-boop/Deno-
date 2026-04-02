@@ -14,11 +14,6 @@ class BiDirectionalPriorityQueue:
     def __init__(self):
         self._elements = []
 
-def enqueue(self, obj):
-    obj.priority = self._calculate_priority(obj)
-    self._elements.append(obj)
-    print(f"-> Додано: {obj.name}")
-
 # Розрахунок пріорітету
 def _calculate_priority(self, obj):
     priority = 10 - obj.magnitude
@@ -26,12 +21,22 @@ def _calculate_priority(self, obj):
         priority += 5
     return priority
 
+def enqueue(self, obj):
+    obj.priority = self._calculate_priority(obj)
+    self._elements.append(obj)
+    print(f"-> Додано: {obj.name}")
+
 queue = BiDirectionalPriorityQueue()
 queue.enqueue(SpaceObject("Sirius", "Star", -1.46, 1, 6.75, -16.7))
 queue.enqueue(SpaceObject("Jupiter", "Planet", -2.50, 2, 18.5, -23.0))
 queue.enqueue(SpaceObject("Aldebaran", "Star", +0.85, 3, 4.60, +16.5))
 queue.enqueue(SpaceObject("Cassiopeia", "Constellation", +2.00, 4, 1.00, +60.0))
 queue.enqueue(SpaceObject("Mars", "Planet", -0.50, 5, 15.2, -18.0))
+
+def display(self):
+    print("\nПоточна черга:")
+    for obj in self.elements:
+        print(f"Об'єкт: {obj.name}, Пріоритет: {obj.priority}")
 
 """
 best_object = max(elements, key=lambda x: x.priority)
