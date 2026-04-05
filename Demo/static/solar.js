@@ -6,6 +6,33 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 
+console.log("Create the scene");
+const scene = new THREE.Scene();
+
+console.log("Create a perspective projection camera");
+var camera = new THREE.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 0.1, 1000 );
+camera.position.set(-175, 115, 5);
+
+console.log("Create the renderer");
+const renderer = new THREE.WebGL1Renderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+console.log("Create an orbit control");
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.75;
+controls.screenSpacePanning = false;
+
+const sunLight = new THREE.PointLight(0xffffff, 2, 500); 
+sunLight.position.set(0, 0, 0);
+scene.add(sunLight); // сонце світиться
+const ambientLight = new THREE.AmbientLight(0x404040, 1.5); 
+scene.add(ambientLight); // загальне світло
+
+scene.background = new THREE.Color(0x000000);
+
 // Інформація про планети, що з'являється, при їх натисканні
 const planetsData = {
     'Mercury': {
