@@ -38,3 +38,16 @@ p {
     color: white; 
     line-height: 1.5; 
 }
+
+canvas {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    outline: none;
+    z-index: 1;
+}
+
+#gui-container {
+    position: absolute;
+    z-index: 100;
+}

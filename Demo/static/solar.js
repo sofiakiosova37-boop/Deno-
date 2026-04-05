@@ -91,4 +91,39 @@ const planetsData = {
     }
 };
 
+
+// сцена/місце, де буде анімація
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight, 
+    0.1,
+    1000
+);
+camera.position.set(0, 20, 100);
+
+const renderer = new THREE.WebGLRenderer({
+  antialias: true
+});
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+renderer.render(scene, camera);
+
+const gui = new dat.GUI({ autoPlace: false }); 
+const guiContainer = document.getElementById('gui-container');
+guiContainer.appendChild(gui.domElement);
+
+// Сонце
+const sunGeometry = new THREE.SphereGeometry(1, 32, 32);
 const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+const sun = new THREE.Mesh(sunGeometry, sunMaterial);
+scene.add(sun);
+
+// Анімація
+function animate() {
+    requestAnimationFrame(animate);
+    sun.rotation.y += 0.005;
+    controls.update();
+    renderer.render(scene, camera);
+}
+animate();
