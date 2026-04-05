@@ -145,10 +145,10 @@ const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
 const sun = new THREE.Mesh(sunGeometry, sunMaterial);
 scene.add(sun);
 
-const sunLight = new THREE.PointLight(0xffffff, 1000, 500); 
+const sunLight = new THREE.PointLight(0xffffff, 2, 500); 
 sunLight.position.set(0, 0, 0);
 scene.add(sunLight); // сонце світиться
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.3); 
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.2); 
 scene.add(ambientLight); // загальне світло
 
 // Анімація планет
@@ -164,8 +164,8 @@ function initPlanets() {
         planetObjects.push({
             mesh: planetMesh,
             distance: data.distance,
-            angle: Math.random() * Math.PI * 2, 
-            speed: 0.005 + (Math.random() * 0.01) 
+            angle: Math.random() * Math.PI * 2,
+            speed: 0.5 / Math.pow(data.distance, 1.5)
         });
     });
 }
