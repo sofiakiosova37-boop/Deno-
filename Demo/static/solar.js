@@ -52,10 +52,38 @@ function createPlanet(planetName, size, position, tilt, color) {
     const geometry = new THREE.SphereGeometry(size, 32, 20);
     const planet = new THREE.Mesh(geometry, material);
     const planetSystem = new THREE.Group();
+    let Ring;
     const orbitGroup = new THREE.Object3D();
     planetSystem.add(planet);
     planet.position.x = position;
     planet.rotation.z = tilt * Math.PI / 180;
+    // orbit
+     const orbitPath = new THREE.EllipseCurve(
+    0, 0,           
+    position, position, 
+    0, 2 * Math.PI,   
+    false,            
+    0                 
+);
+const pathPoints = orbitPath.getPoints(100);
+const orbitGeometry = new THREE.BufferGeometry().setFromPoints(pathPoints);
+const orbitMaterial = new THREE.LineBasicMaterial({ color: 0xFFFFFF, transparent: true, opacity: 0.03 });
+const orbit = new THREE.LineLoop(orbitGeometry, orbitMaterial);
+orbit.rotation.x = Math.PI / 2;
+planetSystem.add(orbit);
+
+if(ring)
+  {
+    const RingGeo = new THREE.RingGeometry(ring.innerRadius, ring.outerRadius,30);
+    const RingMat = new THREE.MeshStandardMaterial({
+      side: THREE.DoubleSide
+    });
+    Ring = new THREE.Mesh(RingGeo, RingMat);
+    planetSystem.add(Ring);
+    Ring.position.x = position;
+    Ring.rotation.x = -0.5 *Math.PI;
+    Ring.rotation.y = -tilt * Math.PI / 180;
+  }
 }
 
 // Інформація про планети, що з'являється, при їх натисканні
