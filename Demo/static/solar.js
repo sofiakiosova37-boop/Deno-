@@ -9,6 +9,9 @@ import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 // Інформація про планети, що з'являється, при їх натисканні
 const planetsData = {
     'Mercury': {
+        color: 0xaaaaaa, 
+        distance: 15,
+        size: 0.8,
         radius: '2,439.7 km',
         tilt: '0.034°',
         rotation: '58.6 Earth days',
@@ -18,6 +21,9 @@ const planetsData = {
         info: 'The smallest planet in our solar system and nearest to the Sun.'
     },
     'Venus': {
+        color: 0xe3bb76, 
+        distance: 25,
+        size: 1.5,
         radius: '6,051.8 km',
         tilt: '177.4°',
         rotation: '243 Earth days',
@@ -27,6 +33,9 @@ const planetsData = {
         info: 'Second planet from the Sun, known for its extreme temperatures and thick atmosphere.'
     },
     'Earth': {
+        color: 0x2233ff,
+        distance: 35,
+        size: 1.6,
         radius: '6,371 km',
         tilt: '23.5°',
         rotation: '24 hours',
@@ -36,6 +45,9 @@ const planetsData = {
         info: 'Third planet from the Sun and the only known planet to harbor life.'
     },
     'Mars': {
+        color: 0xff3300, 
+        distance: 45,
+        size: 1.2,
         radius: '3,389.5 km',
         tilt: '25.19°',
         rotation: '1.03 Earth days',
@@ -45,6 +57,9 @@ const planetsData = {
         info: 'Known as the Red Planet, famous for its reddish appearance and potential for human colonization.'
     },
     'Jupiter': {
+        color: 0xd39c7e, 
+        distance: 65,
+        size: 3.5,
         radius: '69,911 km',
         tilt: '3.13°',
         rotation: '9.9 hours',
@@ -54,6 +69,9 @@ const planetsData = {
         info: 'The largest planet in our solar system, known for its Great Red Spot.'
     },
     'Saturn': {
+        color: 0xf4d4ad, 
+        distance: 85,
+        size: 2.8,
         radius: '58,232 km',
         tilt: '26.73°',
         rotation: '10.7 hours',
@@ -63,6 +81,9 @@ const planetsData = {
         info: 'Distinguished by its extensive ring system, the second-largest planet in our solar system.'
     },
     'Uranus': {
+        color: 0x66ffff, 
+        distance: 105,
+        size: 2.0,
         radius: '25,362 km',
         tilt: '97.77°',
         rotation: '17.2 hours',
@@ -72,6 +93,9 @@ const planetsData = {
         info: 'Known for its unique sideways rotation and pale blue color.'
     },
     'Neptune': {
+        color: 0x3366ff, 
+        distance: 125,
+        size: 1.9,
         radius: '24,622 km',
         tilt: '28.32°',
         rotation: '16.1 hours',
@@ -81,6 +105,9 @@ const planetsData = {
         info: 'The most distant planet from the Sun in our solar system, known for its deep blue color.'
     },
     'Pluto': {
+        color: 0x96847a, 
+        distance: 140,
+        size: 0.6,
         radius: '1,188.3 km',
         tilt: '122.53°',
         rotation: '6.4 Earth days',
@@ -91,6 +118,27 @@ const planetsData = {
     }
 };
 
+// Масив планет
+const planetObjects = [];
+// Анімація планет 
+function initPlanets() {
+    Object.keys(planetsData).forEach((name) => {
+        const data = planetsData[name];
+        const geometry = new THREE.SphereGeometry(data.size, 32, 32);
+        const material = new THREE.MeshStandardMaterial({ color: data.color });
+        const planetMesh = new THREE.Mesh(geometry, material);
+        planetMesh.position.x = data.distance;
+        planetMesh.name = name;
+        scene.add(planetMesh);
+        planetObjects.push({
+            mesh: planetMesh,
+            distance: data.distance,
+            angle: Math.random() * Math.PI * 2, 
+            speed: 0.005 + (Math.random() * 0.01) 
+        });
+    });
+}
+initPlanets();
 
 // сцена/місце, де буде анімація
 const scene = new THREE.Scene();
