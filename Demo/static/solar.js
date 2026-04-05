@@ -25,13 +25,24 @@ controls.enableDamping = true;
 controls.dampingFactor = 0.75;
 controls.screenSpacePanning = false;
 
+scene.background = new THREE.Color(0x000000);
+
+// ******  Сонце  ******
+const sunSize = 697/40; 
+const sunGeom = new THREE.SphereGeometry(sunSize, 32, 20);
+const sunMat = new THREE.MeshStandardMaterial({
+    color: 0xffcc00,
+    emissive: 0xFFF88F,
+    emissiveIntensity: 2
+});
+const sun = new THREE.Mesh(sunGeom, sunMat);
+scene.add(sun);
 const sunLight = new THREE.PointLight(0xffffff, 2, 500); 
 sunLight.position.set(0, 0, 0);
 scene.add(sunLight); // сонце світиться
 const ambientLight = new THREE.AmbientLight(0x404040, 1.5); 
 scene.add(ambientLight); // загальне світло
 
-scene.background = new THREE.Color(0x000000);
 
 // Інформація про планети, що з'являється, при їх натисканні
 const planetsData = {
