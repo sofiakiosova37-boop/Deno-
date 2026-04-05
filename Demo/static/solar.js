@@ -84,7 +84,27 @@ if(ring)
     Ring.rotation.x = -0.5 *Math.PI;
     Ring.rotation.y = -tilt * Math.PI / 180;
   }
-}
+
+// ****** Створення планет ******
+const planetObjects = [];
+const mercury = createPlanet('Mercury', 2.4, 40, 0, 0xaaaaaa);
+const venus = createPlanet('Venus', 6.1, 65, 177, 0xe3bb76);
+const earth = createPlanet('Earth', 6.4, 90, 23.5, 0x2233ff);
+const mars = createPlanet('Mars', 3.4, 115, 25, 0xff3300);
+const jupiter = createPlanet('Jupiter', 69/4, 200, 3, 0xd39c7e);
+const saturn = createPlanet('Saturn', 58/4, 270, 26, 0xf4d4ad, {
+    innerRadius: 18, 
+    outerRadius: 29
+});
+const uranus = createPlanet('Uranus', 25/4, 320, 97, 0x66ffff, {
+    innerRadius: 10, 
+    outerRadius: 12
+});
+const neptune = createPlanet('Neptune', 24/4, 350, 28, 0x3366ff);
+const pluto = createPlanet('Pluto', 1.2, 380, 122, 0x96847a);
+const planets = [mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, pluto];
+const distances = [40, 65, 90, 115, 200, 270, 320, 350, 380];
+};
 
 // Інформація про планети, що з'являється, при їх натисканні
 const planetsData = {
@@ -170,87 +190,3 @@ const planetsData = {
         info: 'Originally classified as the ninth planet, Pluto is now considered a dwarf planet.'
     }
 };
-
-/**
-// Масив планет
-const planetObjects = [];
-// сцена/місце, де буде анімація
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight, 
-    0.1,
-    1000
-);
-camera.position.set(0, 20, 100);
-
-const renderer = new THREE.WebGLRenderer({
-  antialias: true
-});
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
-// renderer.render(scene, camera);
-
-const controls = new OrbitControls(camera, renderer.domElement);
-
-// Сонце
-const sunGeometry = new THREE.SphereGeometry(10, 32, 32);
-const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-const sun = new THREE.Mesh(sunGeometry, sunMaterial);
-scene.add(sun);
-
-const sunLight = new THREE.PointLight(0xffffff, 2, 500); 
-sunLight.position.set(0, 0, 0);
-scene.add(sunLight); // сонце світиться
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.2); 
-scene.add(ambientLight); // загальне світло
-
-// Анімація планет
-function initPlanets() {
-    Object.keys(planetsData).forEach((name) => {
-        const data = planetsData[name];
-        // Орбіти
-        const orbitGeometry = new THREE.RingGeometry(data.distance, data.distance + 0.1, 64);
-        const orbitMaterial = new THREE.MeshBasicMaterial({ 
-            color: 0xffffff, 
-            side: THREE.DoubleSide,
-            transparent: true,
-            opacity: 0.5
-        });
-        const orbit = new THREE.Mesh(orbitGeometry, orbitMaterial);
-        orbit.rotation.x = Math.PI / 2; 
-        scene.add(orbit);
-        // Планети
-        const geometry = new THREE.SphereGeometry(data.size, 32, 32);
-        const material = new THREE.MeshStandardMaterial({ color: data.color });
-        const planetMesh = new THREE.Mesh(geometry, material);
-        // Позиція Планет
-        planetMesh.position.x = data.distance;
-        planetMesh.name = name;
-        scene.add(planetMesh); // Сцена
-        // Швидкість обертання
-        planetObjects.push({
-            mesh: planetMesh,
-            distance: data.distance,
-            angle: Math.random() * Math.PI * 2,
-            speed: 0.5 / Math.pow(data.distance, 1.5), // обертання навколо сонця
-            rotationSpeed: 0.01 // Навколо власної осі 
-        });
-    });
-}
-initPlanets();
-
-// Анімація
-function animate() {
-    requestAnimationFrame(animate);
-    sun.rotation.y += 0.005;
-    planetObjects.forEach((obj) => {
-        obj.angle += obj.speed;
-        obj.mesh.position.x = Math.cos(obj.angle) * obj.distance;
-        obj.mesh.position.z = Math.sin(obj.angle) * obj.distance;
-        obj.mesh.rotation.y += obj.rotationSpeed;
-    });
-    controls.update();
-    renderer.render(scene, camera);
-}
-animate(); */
