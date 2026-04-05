@@ -43,6 +43,20 @@ scene.add(sunLight); // сонце світиться
 const ambientLight = new THREE.AmbientLight(0x404040, 1.5); 
 scene.add(ambientLight); // загальне світло
 
+// ****** Функція для планет ******
+function createPlanet(planetName, size, position, tilt, color) {
+    const material = new THREE.MeshPhongMaterial({
+    color: color,
+    });
+    const name = planetName;
+    const geometry = new THREE.SphereGeometry(size, 32, 20);
+    const planet = new THREE.Mesh(geometry, material);
+    const planetSystem = new THREE.Group();
+    const orbitGroup = new THREE.Object3D();
+    planetSystem.add(planet);
+    planet.position.x = position;
+    planet.rotation.z = tilt * Math.PI / 180;
+}
 
 // Інформація про планети, що з'являється, при їх натисканні
 const planetsData = {
