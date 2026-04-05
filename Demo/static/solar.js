@@ -120,7 +120,38 @@ const planetsData = {
 
 // Масив планет
 const planetObjects = [];
-// Анімація планет 
+// сцена/місце, де буде анімація
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight, 
+    0.1,
+    1000
+);
+camera.position.set(0, 20, 100);
+
+const renderer = new THREE.WebGLRenderer({
+  antialias: true
+});
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+// renderer.render(scene, camera);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+
+// Сонце
+const sunGeometry = new THREE.SphereGeometry(10, 32, 32);
+const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+const sun = new THREE.Mesh(sunGeometry, sunMaterial);
+scene.add(sun);
+
+const sunLight = new THREE.PointLight(0xffffff, 1000, 500); 
+sunLight.position.set(0, 0, 0);
+scene.add(sunLight); // сонце світиться
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.3); 
+scene.add(ambientLight); // загальне світло
+
+// Анімація планет
 function initPlanets() {
     Object.keys(planetsData).forEach((name) => {
         const data = planetsData[name];
@@ -140,35 +171,16 @@ function initPlanets() {
 }
 initPlanets();
 
-// сцена/місце, де буде анімація
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight, 
-    0.1,
-    1000
-);
-camera.position.set(0, 20, 100);
-
-const renderer = new THREE.WebGLRenderer({
-  antialias: true
-});
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
-renderer.render(scene, camera);
-
-const controls = new OrbitControls(camera, renderer.domElement);
-
-// Сонце
-const sunGeometry = new THREE.SphereGeometry(10, 32, 32);
-const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-const sun = new THREE.Mesh(sunGeometry, sunMaterial);
-scene.add(sun);
-
 // Анімація
 function animate() {
     requestAnimationFrame(animate);
     sun.rotation.y += 0.005;
+    planetObjects.forEach((obj) => {
+        obj.angle += obj.speed;
+        obj.mesh.position.x = Math.cos(obj.angle) * obj.distance;
+        obj.mesh.position.z = Math.sin(obj.angle) * obj.distance;
+        obj.mesh.rotation.y += 0.02;
+    });
     controls.update();
     renderer.render(scene, camera);
 }
