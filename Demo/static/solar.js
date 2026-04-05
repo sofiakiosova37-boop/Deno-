@@ -109,12 +109,10 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 renderer.render(scene, camera);
 
-const gui = new dat.GUI({ autoPlace: false }); 
-const guiContainer = document.getElementById('gui-container');
-guiContainer.appendChild(gui.domElement);
+const controls = new OrbitControls(camera, renderer.domElement);
 
 // Сонце
-const sunGeometry = new THREE.SphereGeometry(1, 32, 32);
+const sunGeometry = new THREE.SphereGeometry(10, 32, 32);
 const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
 const sun = new THREE.Mesh(sunGeometry, sunMaterial);
 scene.add(sun);
