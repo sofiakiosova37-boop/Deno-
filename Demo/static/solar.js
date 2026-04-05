@@ -1,3 +1,12 @@
+import * as THREE from 'three';
+import * as dat from 'dat.gui';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
+
+// Інформація про планети, що з'являється, при їх натисканні
 const planetsData = {
     'Mercury': {
         radius: '2,439.7 km',
@@ -81,3 +90,5 @@ const planetsData = {
         info: 'Originally classified as the ninth planet, Pluto is now considered a dwarf planet.'
     }
 };
+
+const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
