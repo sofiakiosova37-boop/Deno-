@@ -155,6 +155,14 @@ scene.add(ambientLight); // загальне світло
 function initPlanets() {
     Object.keys(planetsData).forEach((name) => {
         const data = planetsData[name];
+        const orbitGeometry = new THREE.RingGeometry(data.distance, data.distance + 0.1, 64);
+        const orbitMaterial = new THREE.MeshBasicMaterial({ 
+            color: 0xffffff, 
+            side: THREE.DoubleSide,
+            transparent: true,
+            opacity: 0.5
+        });
+        const orbit = new THREE.Mesh(orbitGeometry, orbitMaterial);
         const geometry = new THREE.SphereGeometry(data.size, 32, 32);
         const material = new THREE.MeshStandardMaterial({ color: data.color });
         const planetMesh = new THREE.Mesh(geometry, material);
