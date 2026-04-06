@@ -17,6 +17,11 @@ controls.dampingFactor = 0.75;
 controls.screenSpacePanning = false;
 scene.background = new THREE.Color(0x000000);
 
+const settings = {
+    acceleration: 1,      
+    accelerationOrbit: 1  
+};
+
 // ******  Сонце  ******
 const sunSize = 697/40; 
 const sunGeom = new THREE.SphereGeometry(sunSize, 32, 20);
@@ -40,6 +45,7 @@ function createPlanet(planetName, size, position, tilt, color, ring) {
         new THREE.SphereGeometry(size, 32, 20),
         new THREE.MeshPhongMaterial({ color: color })
     );
+    mesh.userData = { name: planetName }; 
     const planetSystem = new THREE.Group();
     const orbitGroup = new THREE.Object3D();
     mesh.position.x = position;
@@ -69,7 +75,8 @@ if(ring)
   }
   orbitGroup.add(planetSystem);
   scene.add(orbitGroup);
-  const orbitSpeed = (1 / Math.sqrt(position)) * 0.05;
+  const timeScale = 0.02;
+  const orbitSpeed = (1 / Math.sqrt(position)) * timeScale;
   planetObjects.push({ orbitGroup, mesh, orbitSpeed });
 }
 // ****** Створення планет ******
@@ -89,19 +96,92 @@ createPlanet('Uranus', 25/4, 320, 97, 0x66ffff, {
 createPlanet('Neptune', 24/4, 350, 28, 0x3366ff);
 createPlanet('Pluto', 1.2, 380, 122, 0x96847a);
 
+// Інтерактив у формі кліків 
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+let selectedPlanet = null;
+let isMovingTowardsPlanet = false;
+let targetCameraPosition = new THREE.Vector3();
+function onMouseDown(event) {
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(planetObjects.map(p => p.mesh));
+    if (intersects.length > 0) {
+        const clicked = intersects[0].object;
+        selectedPlanet = planetObjects.find(p => p.mesh === clicked);
+        if (selectedPlanet) {
+            settings.accelerationOrbit = 0; 
+            const planetPos = new THREE.Vector3();
+            clicked.getWorldPosition(planetPos);
+            targetCameraPosition.copy(planetPos).add(new THREE.Vector3(0, 20, 50));
+            isMovingTowardsPlanet = true;
+            showPlanetInfo(clicked.userData.name);
+        }
+    }
+ }
+function showPlanetInfo(name) {
+    const infoDiv = document.getElementById('planetInfo');
+    const data = planetsData[name];
+        if (data) {
+            document.getElementById('planetName').innerText = name;
+            document.getElementById('planetDetails').innerHTML = `
+                <div style="margin-bottom: 10px; font-style: italic;">${data.info}</div>
+                <hr>
+                <b>Радіус:</b> ${data.radius}<br>
+                <b>Відстань до Сонця:</b> ${data.distance}<br>
+                <b>Період оберту (рік):</b> ${data.orbit}<br>
+                <b>Тривалість дня:</b> ${data.rotation}<br>
+                <b>Нахил осі:</b> ${data.tilt}<br>
+                <b>Супутники:</b> ${data.moons}
+            `; 
+            infoDiv.style.display = 'block';
+        }
+    }
+
+window.showPlanetInfo = function(name) {
+    const infoDiv = document.getElementById('planetInfo');
+    const data = planetsData[name];
+    if (data && infoDiv) {
+        document.getElementById('planetName').innerText = name;
+        document.getElementById('planetDetails').innerHTML = `
+            <div style="margin-bottom: 10px; font-style: italic;">${data.info}</div>
+            <hr>
+            <b>Радіус:</b> ${data.radius}<br>
+            <b>Відстань:</b> ${data.distance}<br>
+            <b>Період оберту:</b> ${data.orbit}<br>
+            <b>Супутники:</b> ${data.moons}
+        `; 
+        infoDiv.style.display = 'block'; 
+    }
+};
+window.closeInfo = function() {
+    const infoDiv = document.getElementById('planetInfo');
+    if(infoDiv) infoDiv.style.display = 'none';
+    settings.accelerationOrbit = 1; 
+    isMovingTowardsPlanet = false;
+}
 // Анімація
 function animate() {
     requestAnimationFrame(animate);
-    planetObjects.forEach(obj => {
-        obj.orbitGroup.rotation.y += obj.orbitSpeed; 
-        obj.mesh.rotation.y += 0.001; 
-    });
-    sun.rotation.y += 0.0005;
-    controls.update(); 
-    renderer.render(scene, camera); 
+    if (!isMovingTowardsPlanet) {
+        planetObjects.forEach(obj => {
+            obj.orbitGroup.rotation.y += obj.orbitSpeed * settings.accelerationOrbit;
+            obj.mesh.rotation.y += 0.01 * settings.acceleration;
+        });
+        sun.rotation.y += 0.005 * settings.acceleration;
+    } else {
+        camera.position.lerp(targetCameraPosition, 0.05);
+        const planetPos = new THREE.Vector3();
+        selectedPlanet.mesh.getWorldPosition(planetPos);
+        controls.target.lerp(planetPos, 0.05); 
+        if (camera.position.distanceTo(targetCameraPosition) < 1) isMovingTowardsPlanet = false;
+    }
+    controls.update();
+    renderer.render(scene, camera);
 }
+window.addEventListener('mousedown', onMouseDown);
 animate();
-
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
