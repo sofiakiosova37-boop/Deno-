@@ -4,8 +4,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 5000);
-camera.position.set(-175, 115, 5);
-scene.background = new THREE.Color(0x000000);
+camera.position.set(-400, 250, 100);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -19,14 +18,20 @@ controls.screenSpacePanning = false;
 
 const textureLoader = new THREE.TextureLoader();
 
+const spaceTexture = textureLoader.load('/static/image/milky.jpg');
+spaceTexture.mapping = THREE.EquirectangularReflectionMapping;
+spaceTexture.colorSpace = THREE.SRGBColorSpace; 
+
+scene.background = spaceTexture;
+
 const settings = {
     acceleration: 1,      
     accelerationOrbit: 1  
 };
 
 // ******  Сонце  ******
-const sunSize = 697/40; 
-const sunGeom = new THREE.SphereGeometry(sunSize, 32, 20);
+const sunSize = 45; 
+const sunGeom = new THREE.SphereGeometry(sunSize, 64, 64);
 const sunTexture = textureLoader.load('/static/image/sun.jpg');
 const sunMat = new THREE.MeshStandardMaterial({
     map: sunTexture,
@@ -37,7 +42,7 @@ const sunMat = new THREE.MeshStandardMaterial({
 const sun = new THREE.Mesh(sunGeom, sunMat);
 scene.add(sun);
 //
-const sunLight = new THREE.PointLight(0xffffff, 2, 500); 
+const sunLight = new THREE.PointLight(0xffffff, 2.5, 1000); 
 sunLight.position.set(0, 0, 0);
 scene.add(sunLight); // сонце світиться
 const ambientLight = new THREE.AmbientLight(0x404040, 1.5); 
@@ -112,23 +117,23 @@ if(ring)
   planetObjects.push({ orbitGroup, mesh, orbitSpeed });
 }
 // ****** Створення планет ******
-createPlanet('Mercury', 2.4, 40, 0, '/static/image/mercury.jpg');
-createPlanet('Venus', 6.1, 65, 177, '/static/image/venusmap.jpg');
-createPlanet('Earth', 6.4, 90, 23.5, '/static/image/earth_daymap.jpg');
-createPlanet('Mars', 3.4, 115, 25, '/static/image/marsmap.jpg');
-createPlanet('Jupiter', 69/4, 200, 3, '/static/image/jupiter.jpg');
-createPlanet('Saturn', 58/4, 270, 26, '/static/image/saturnmap.jpg', {
+createPlanet('Mercury', 2, 70, 0, '/static/image/mercury.jpg');
+createPlanet('Venus', 4.5, 90, 177, '/static/image/venusmap.jpg');
+createPlanet('Earth', 5, 115, 23.5, '/static/image/earth_daymap.jpg');
+createPlanet('Mars', 3, 140, 25, '/static/image/marsmap.jpg');
+createPlanet('Jupiter', 18, 220, 3, '/static/image/jupiter.jpg');
+createPlanet('Saturn', 15, 300, 26, '/static/image/saturnmap.jpg', {
     innerRadius: 18, 
-    outerRadius: 29,
+    outerRadius: 32,
     texturePath: '/static/image/saturn_ring.png'
 });
-createPlanet('Uranus', 25/4, 320, 97, '/static/image/uranus.jpg', {
+createPlanet('Uranus', 8, 380, 97, '/static/image/uranus.jpg', {
     innerRadius: 10, 
-    outerRadius: 12,
+    outerRadius: 15,
     texturePath: '/static/image/uranus_ring.png'
 });
-createPlanet('Neptune', 24/4, 350, 28, '/static/image/neptune.jpg');
-createPlanet('Pluto', 1.2, 380, 122, '/static/image/plutomap.jpg');
+createPlanet('Neptune', 7.5, 430, 28, '/static/image/neptune.jpg');
+createPlanet('Pluto', 1, 470, 122, '/static/image/plutomap.jpg');
 
 // Інтерактив у формі кліків 
 const raycaster = new THREE.Raycaster();
