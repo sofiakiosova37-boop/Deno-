@@ -60,7 +60,16 @@
 }
 
 .button {
+    border: none;
+    border-radius: 25px;
     margin-top: 10px;       
     padding: 10px 20px;
     cursor: pointer;
+    color: #4b0082;
+    transition: background-color 0.3s ease;
+    background-color: #e0b0ff;
+}
+
+.button:hover {
+    background-color: #d190ff; 
 }
