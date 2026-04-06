@@ -3,7 +3,7 @@ import * as dat from 'dat.gui';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 5000);
 camera.position.set(-175, 115, 5);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -69,7 +69,7 @@ if(ring)
   }
   orbitGroup.add(planetSystem);
   scene.add(orbitGroup);
-  const orbitSpeed = (1 / Math.sqrt(position)) * 0.5;
+  const orbitSpeed = (1 / Math.sqrt(position)) * 0.05;
   planetObjects.push({ orbitGroup, mesh, orbitSpeed });
 }
 // ****** Створення планет ******
@@ -94,9 +94,9 @@ function animate() {
     requestAnimationFrame(animate);
     planetObjects.forEach(obj => {
         obj.orbitGroup.rotation.y += obj.orbitSpeed; 
-        obj.mesh.rotation.y += 0.01; 
+        obj.mesh.rotation.y += 0.001; 
     });
-    sun.rotation.y += 0.002;
+    sun.rotation.y += 0.0005;
     controls.update(); 
     renderer.render(scene, camera); 
 }
