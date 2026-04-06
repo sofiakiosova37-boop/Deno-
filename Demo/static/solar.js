@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import * as dat from 'dat.gui';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -88,8 +88,25 @@ createPlanet('Uranus', 25/4, 320, 97, 0x66ffff, {
 });
 createPlanet('Neptune', 24/4, 350, 28, 0x3366ff);
 createPlanet('Pluto', 1.2, 380, 122, 0x96847a);
-// const planets = [mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, pluto];
-// const distances = [40, 65, 90, 115, 200, 270, 320, 350, 380];
+
+// Анімація
+function animate() {
+    requestAnimationFrame(animate);
+    planetObjects.forEach(obj => {
+        obj.orbitGroup.rotation.y += obj.orbitSpeed; 
+        obj.mesh.rotation.y += 0.01; 
+    });
+    sun.rotation.y += 0.002;
+    controls.update(); 
+    renderer.render(scene, camera); 
+}
+animate();
+
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
 
 // Інформація про планети, що з'являється, при їх натисканні
 const planetsData = {
