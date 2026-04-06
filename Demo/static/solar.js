@@ -5,6 +5,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 5000);
 camera.position.set(-175, 115, 5);
+scene.background = new THREE.Color(0x000000);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -13,9 +14,10 @@ document.body.appendChild(renderer.domElement);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
-controls.dampingFactor = 0.75;
+controls.dampingFactor = 0.05;
 controls.screenSpacePanning = false;
-scene.background = new THREE.Color(0x000000);
+
+const textureLoader = new THREE.TextureLoader();
 
 const settings = {
     acceleration: 1,      
@@ -25,13 +27,16 @@ const settings = {
 // ******  Сонце  ******
 const sunSize = 697/40; 
 const sunGeom = new THREE.SphereGeometry(sunSize, 32, 20);
+const sunTexture = textureLoader.load('/static/image/sun.jpg');
 const sunMat = new THREE.MeshStandardMaterial({
-    color: 0xffcc00,
-    emissive: 0xFFF88F,
-    emissiveIntensity: 2
+    map: sunTexture,
+    emissive: 0xffcc00,
+    emissiveMap: sunTexture,
+    emissiveIntensity: 1.5
 });
 const sun = new THREE.Mesh(sunGeom, sunMat);
 scene.add(sun);
+//
 const sunLight = new THREE.PointLight(0xffffff, 2, 500); 
 sunLight.position.set(0, 0, 0);
 scene.add(sunLight); // сонце світиться
@@ -40,10 +45,16 @@ scene.add(ambientLight); // загальне світло
 
 // ****** Функція для планет ******
 const planetObjects = [];
-function createPlanet(planetName, size, position, tilt, color, ring) {
+function createPlanet(planetName, size, position, tilt, texturePath, ring) {
+    const planetTexture = textureLoader.load(texturePath);
+    planetTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
     const mesh = new THREE.Mesh(
-        new THREE.SphereGeometry(size, 32, 20),
-        new THREE.MeshPhongMaterial({ color: color })
+        new THREE.SphereGeometry(size, 64, 64),
+        new THREE.MeshStandardMaterial({ 
+            map: planetTexture,
+            metalness: 0.1,
+            roughness: 0.8
+        })
     );
     mesh.userData = { name: planetName }; 
     const planetSystem = new THREE.Group();
@@ -60,14 +71,35 @@ function createPlanet(planetName, size, position, tilt, color, ring) {
 // Кільця
 if(ring)
   {
+    const ringTexture = textureLoader.load(ring.texturePath);
+    const ringGeom = new THREE.RingGeometry(ring.innerRadius, ring.outerRadius, 64);
     const ringMesh = new THREE.Mesh(
-            new THREE.RingGeometry(ring.innerRadius, ring.outerRadius, 32),
+            new THREE.RingGeometry(ring.innerRadius, ring.outerRadius, 64),
             new THREE.MeshStandardMaterial({ 
+                map: ringTexture,
                 side: THREE.DoubleSide, 
                 transparent: true, 
-                opacity: 0.5 
+                opacity: 0.8, 
+                alphaTest: 0.05
             })
         );
+        const pos = ringMesh.geometry.attributes.position;
+        const uv = ringGeom.attributes.uv;
+        const v3 = new THREE.Vector3();
+        for (let i = 0; i < pos.count; i++) {
+        v3.fromBufferAttribute(pos, i);
+        const distance = v3.length();
+        const u = (distance - ring.innerRadius) / (ring.outerRadius - ring.innerRadius);
+        uv.setXY(i, u, 1); 
+    }
+    uv.needsUpdate = true;
+        const ringMat = new THREE.MeshStandardMaterial({ 
+            map: ringTexture,
+            side: THREE.DoubleSide, 
+            transparent: true, 
+            opacity: 0.9, 
+            alphaTest: 0.05
+        });
     ringMesh.position.x = position;
     ringMesh.rotation.x = -0.5 * Math.PI;
     ringMesh.rotation.y = -tilt * Math.PI / 180;
@@ -80,21 +112,23 @@ if(ring)
   planetObjects.push({ orbitGroup, mesh, orbitSpeed });
 }
 // ****** Створення планет ******
-createPlanet('Mercury', 2.4, 40, 0, 0xaaaaaa);
-createPlanet('Venus', 6.1, 65, 177, 0xe3bb76);
-createPlanet('Earth', 6.4, 90, 23.5, 0x2233ff);
-createPlanet('Mars', 3.4, 115, 25, 0xff3300);
-createPlanet('Jupiter', 69/4, 200, 3, 0xd39c7e);
-createPlanet('Saturn', 58/4, 270, 26, 0xf4d4ad, {
+createPlanet('Mercury', 2.4, 40, 0, '/static/image/mercury.jpg');
+createPlanet('Venus', 6.1, 65, 177, '/static/image/venusmap.jpg');
+createPlanet('Earth', 6.4, 90, 23.5, '/static/image/earth_daymap.jpg');
+createPlanet('Mars', 3.4, 115, 25, '/static/image/marsmap.jpg');
+createPlanet('Jupiter', 69/4, 200, 3, '/static/image/jupiter.jpg');
+createPlanet('Saturn', 58/4, 270, 26, '/static/image/saturnmap.jpg', {
     innerRadius: 18, 
-    outerRadius: 29
+    outerRadius: 29,
+    texturePath: '/static/image/saturn_ring.png'
 });
-createPlanet('Uranus', 25/4, 320, 97, 0x66ffff, {
+createPlanet('Uranus', 25/4, 320, 97, '/static/image/uranus.jpg', {
     innerRadius: 10, 
-    outerRadius: 12
+    outerRadius: 12,
+    texturePath: '/static/image/uranus_ring.png'
 });
-createPlanet('Neptune', 24/4, 350, 28, 0x3366ff);
-createPlanet('Pluto', 1.2, 380, 122, 0x96847a);
+createPlanet('Neptune', 24/4, 350, 28, '/static/image/neptune.jpg');
+createPlanet('Pluto', 1.2, 380, 122, '/static/image/plutomap.jpg');
 
 // Інтерактив у формі кліків 
 const raycaster = new THREE.Raycaster();
