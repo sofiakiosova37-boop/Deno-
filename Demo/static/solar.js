@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import * as dat from 'dat.gui';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const scene = new THREE.Scene();
@@ -145,9 +144,18 @@ function onMouseDown(event) {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(planetObjects.map(p => p.mesh));
+    const targets = [...planetObjects.map(p => p.mesh), sun];
+    const intersects = raycaster.intersectObjects(targets);
     if (intersects.length > 0) {
         const clicked = intersects[0].object;
+        if (clicked === sun) {
+            settings.accelerationOrbit = 0; 
+            const sunPos = new THREE.Vector3(0, 0, 0);
+            targetCameraPosition.set(0, 100, 150); 
+            isMovingTowardsPlanet = true;
+            showPlanetInfo("Sun"); 
+            return; 
+        }
         selectedPlanet = planetObjects.find(p => p.mesh === clicked);
         if (selectedPlanet) {
             settings.accelerationOrbit = 0; 
@@ -211,11 +219,15 @@ function animate() {
         sun.rotation.y += 0.005 * settings.acceleration;
     } else {
         camera.position.lerp(targetCameraPosition, 0.05);
-        const planetPos = new THREE.Vector3();
-        selectedPlanet.mesh.getWorldPosition(planetPos);
-        controls.target.lerp(planetPos, 0.05); 
-        if (camera.position.distanceTo(targetCameraPosition) < 1) isMovingTowardsPlanet = false;
-    }
+        const targetPos = new THREE.Vector3();
+        if (selectedPlanet) {
+            selectedPlanet.mesh.getWorldPosition(targetPos);
+        } else {
+            targetPos.set(0, 0, 0); 
+        }
+    controls.target.lerp(targetPos, 0.05); 
+    if (camera.position.distanceTo(targetCameraPosition) < 1) isMovingTowardsPlanet = false;
+}
     controls.update();
     renderer.render(scene, camera);
 }
@@ -229,6 +241,15 @@ window.addEventListener('resize', () => {
 
 // Інформація про планети, що з'являється, при їх натисканні
 const planetsData = {
+    "Sun": {
+        radius: "696,340 km",
+        tilt: "7.25°",
+        rotation: "25-35 days",
+        orbit: "230 million years (around the center of the Galaxy)",
+        distance: "center of our solar system",
+        moons: "There are no satellites in the usual sense. However, the solar system contains 8 planets and many asteroids, which are located in two main asteroid clusters in the solar system: the Main Asteroid Belt, located between Mars and Jupiter, and the Kuiper Belt, located beyond the orbit of Neptune. They are the remnants of a protoplanetary disk.",
+        info: "The only star in our system. According to the stellar classification, the Sun belongs to the spectral class G2V. It is a yellow dwarf of the main sequence, which is a red-hot ball of gas with a surface temperature of about 6000 °C."
+    },
     'Mercury': {
         radius: '2,439.7 km',
         tilt: '0.034°',
