@@ -1,30 +1,20 @@
 import * as THREE from 'three';
 import * as dat from 'dat.gui';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
-import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 
-console.log("Create the scene");
 const scene = new THREE.Scene();
-
-console.log("Create a perspective projection camera");
-var camera = new THREE.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 0.1, 1000 );
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.set(-175, 115, 5);
 
-console.log("Create the renderer");
-const renderer = new THREE.WebGL1Renderer();
+const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
+document.body.appendChild(renderer.domElement);
 
-console.log("Create an orbit control");
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.75;
 controls.screenSpacePanning = false;
-
 scene.background = new THREE.Color(0x000000);
 
 // ******  Сонце  ******
@@ -44,67 +34,62 @@ const ambientLight = new THREE.AmbientLight(0x404040, 1.5);
 scene.add(ambientLight); // загальне світло
 
 // ****** Функція для планет ******
-function createPlanet(planetName, size, position, tilt, color) {
-    const material = new THREE.MeshPhongMaterial({
-    color: color,
-    });
-    const name = planetName;
-    const geometry = new THREE.SphereGeometry(size, 32, 20);
-    const planet = new THREE.Mesh(geometry, material);
+const planetObjects = [];
+function createPlanet(planetName, size, position, tilt, color, ring) {
+    const mesh = new THREE.Mesh(
+        new THREE.SphereGeometry(size, 32, 20),
+        new THREE.MeshPhongMaterial({ color: color })
+    );
     const planetSystem = new THREE.Group();
-    let Ring;
     const orbitGroup = new THREE.Object3D();
-    planetSystem.add(planet);
-    planet.position.x = position;
-    planet.rotation.z = tilt * Math.PI / 180;
+    mesh.position.x = position;
+    mesh.rotation.z = tilt * Math.PI / 180;
+    planetSystem.add(mesh);
     // orbit
-     const orbitPath = new THREE.EllipseCurve(
-    0, 0,           
-    position, position, 
-    0, 2 * Math.PI,   
-    false,            
-    0                 
-);
-const pathPoints = orbitPath.getPoints(100);
-const orbitGeometry = new THREE.BufferGeometry().setFromPoints(pathPoints);
-const orbitMaterial = new THREE.LineBasicMaterial({ color: 0xFFFFFF, transparent: true, opacity: 0.03 });
-const orbit = new THREE.LineLoop(orbitGeometry, orbitMaterial);
-orbit.rotation.x = Math.PI / 2;
-planetSystem.add(orbit);
-
+    const orbitPath = new THREE.EllipseCurve( 0, 0, position, position);
+    const orbitGeometry = new THREE.BufferGeometry().setFromPoints(orbitPath.getPoints(100));
+    const orbitLine = new THREE.LineLoop(orbitGeometry, new THREE.LineBasicMaterial({ color: 0xffffff, opacity: 0.1, transparent: true }));
+    orbitLine.rotation.x = Math.PI / 2;
+    scene.add(orbitLine);
+// Кільця
 if(ring)
   {
-    const RingGeo = new THREE.RingGeometry(ring.innerRadius, ring.outerRadius,30);
-    const RingMat = new THREE.MeshStandardMaterial({
-      side: THREE.DoubleSide
-    });
-    Ring = new THREE.Mesh(RingGeo, RingMat);
-    planetSystem.add(Ring);
-    Ring.position.x = position;
-    Ring.rotation.x = -0.5 *Math.PI;
-    Ring.rotation.y = -tilt * Math.PI / 180;
+    const ringMesh = new THREE.Mesh(
+            new THREE.RingGeometry(ring.innerRadius, ring.outerRadius, 32),
+            new THREE.MeshStandardMaterial({ 
+                side: THREE.DoubleSide, 
+                transparent: true, 
+                opacity: 0.5 
+            })
+        );
+    ringMesh.position.x = position;
+    ringMesh.rotation.x = -0.5 * Math.PI;
+    ringMesh.rotation.y = -tilt * Math.PI / 180;
+    planetSystem.add(ringMesh);
   }
-
+  orbitGroup.add(planetSystem);
+  scene.add(orbitGroup);
+  const orbitSpeed = (1 / Math.sqrt(position)) * 0.5;
+  planetObjects.push({ orbitGroup, mesh, orbitSpeed });
+}
 // ****** Створення планет ******
-const planetObjects = [];
-const mercury = createPlanet('Mercury', 2.4, 40, 0, 0xaaaaaa);
-const venus = createPlanet('Venus', 6.1, 65, 177, 0xe3bb76);
-const earth = createPlanet('Earth', 6.4, 90, 23.5, 0x2233ff);
-const mars = createPlanet('Mars', 3.4, 115, 25, 0xff3300);
-const jupiter = createPlanet('Jupiter', 69/4, 200, 3, 0xd39c7e);
-const saturn = createPlanet('Saturn', 58/4, 270, 26, 0xf4d4ad, {
+createPlanet('Mercury', 2.4, 40, 0, 0xaaaaaa);
+createPlanet('Venus', 6.1, 65, 177, 0xe3bb76);
+createPlanet('Earth', 6.4, 90, 23.5, 0x2233ff);
+createPlanet('Mars', 3.4, 115, 25, 0xff3300);
+createPlanet('Jupiter', 69/4, 200, 3, 0xd39c7e);
+createPlanet('Saturn', 58/4, 270, 26, 0xf4d4ad, {
     innerRadius: 18, 
     outerRadius: 29
 });
-const uranus = createPlanet('Uranus', 25/4, 320, 97, 0x66ffff, {
+createPlanet('Uranus', 25/4, 320, 97, 0x66ffff, {
     innerRadius: 10, 
     outerRadius: 12
 });
-const neptune = createPlanet('Neptune', 24/4, 350, 28, 0x3366ff);
-const pluto = createPlanet('Pluto', 1.2, 380, 122, 0x96847a);
-const planets = [mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, pluto];
-const distances = [40, 65, 90, 115, 200, 270, 320, 350, 380];
-};
+createPlanet('Neptune', 24/4, 350, 28, 0x3366ff);
+createPlanet('Pluto', 1.2, 380, 122, 0x96847a);
+// const planets = [mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, pluto];
+// const distances = [40, 65, 90, 115, 200, 270, 320, 350, 380];
 
 // Інформація про планети, що з'являється, при їх натисканні
 const planetsData = {
