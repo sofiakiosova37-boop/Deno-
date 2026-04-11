@@ -12,35 +12,48 @@ class SpaceObject:
 class BiDirectionalPriorityQueue:
     def __init__(self):
         self._elements = []
+        self._counter = 0
 
-        # Розрахунок пріорітету
-        def _calculate_priority(self, obj):
-            priority = 10 - obj.magnitude
-            if obj.dec > 50:
-                priority += 5
-            return priority
+    # Розрахунок пріорітету
+    def _calculate_priority(self, obj):
+        priority = 10 - obj.magnitude
+        if obj.dec > 50:
+            priority += 5
+        return priority
 
-        def enqueue(self, obj):
-            obj.priority = self._calculate_priority(obj)
-            self._elements.append(obj)
-            obj.timestamp = self._counter
-            self._counter += 1
-            print(f"-> Додано: {obj.name}")
+    def enqueue(self, obj):
+        obj.priority = self._calculate_priority(obj)
+        self._elements.append(obj)
+        obj.timestamp = self._counter
+        self._counter += 1
+        print(f"-> Додано: {obj.name}")
 
-        def peek(self, mode):
-            if mode == "highest":
-                return max(self._elements, key=lambda x: x.priority)
-            elif mode == "lowest":
-                return min(self._elements, key=lambda x: x.priority)
-            elif mode == "oldest":
-                return min(self._elements, key=lambda x: x.timestamp)
-            elif mode == "newest":
-                return max(self._elements, key=lambda x: x.timestamp)
+    def peek(self, mode):
+        if mode == "highest":
+            return max(self._elements, key=lambda x: x.priority)
+        elif mode == "lowest":
+            return min(self._elements, key=lambda x: x.priority)
+        elif mode == "oldest":
+            return min(self._elements, key=lambda x: x.timestamp)
+        elif mode == "newest":
+            return max(self._elements, key=lambda x: x.timestamp)
             
-        def display(self):
-            print("\nПоточна черга:")
-            for obj in self.elements:
-                print(f"- {obj.name} (Тип: {obj.body_type}, Пріоритет: {obj.priority:.2f})")
+    def dequeue(self, mode):
+        if mode == "highest":
+            obj = max(self._elements, key=lambda x: x.priority)
+        elif mode == "lowest":
+            obj = min(self._elements, key=lambda x: x.priority)
+        elif mode == "oldest":
+            obj = min(self._elements, key=lambda x: x.timestamp)
+        elif mode == "newest":
+            obj = max(self._elements, key=lambda x: x.timestamp)
+        self._elements.remove(obj)
+        return obj
+            
+    def display(self):
+        print("\nПоточна черга:")
+        for obj in self._elements
+            print(f"- {obj.name} (Тип: {obj.body_type}, Пріоритет: {obj.priority:.2f})")
 
 queue = BiDirectionalPriorityQueue()
 queue.enqueue(SpaceObject("Sirius", "Star", -1.46, 1, 6.75, -16.7))
