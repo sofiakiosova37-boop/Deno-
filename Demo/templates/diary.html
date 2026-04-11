@@ -1,15 +1,47 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="uk">
 <head>
-    <title>Щоденик астрофотографій</title>
+    <meta charset="UTF-8">
+    <title>Щоденик астрофотографій | Asteria Space</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
     <div class="Title">
         <h1>Asteria Space</h1>
-        <h1>Цікаві астрономічні факти</h1>
+        <h2>Цікаві астрономічні факти</h2>
     </div>
+
+    <div class="controls">
+        <button onclick="loadData('nearest')">Від найближчого</button>
+        <button onclick="loadData('farthest')">Від найдальшого</button>
+    </div>
+
+    <ul id="list" style="padding: 0;"></ul>
+
+    <script>
+    async function loadData(order) {
+        try {
+            const res = await fetch(`/objects?order=${order}`);
+            const data = await res.json();
+            const list = document.getElementById("list");
+            list.innerHTML = "";
+            data.forEach(obj => {
+                const li = document.createElement("li");
+                li.className = "card";
+                let distLabel = obj.distance >= 1 ? obj.distance.toLocaleString() : obj.distance;
+                li.innerHTML = `
+                    <h3>${obj.name}</h3>
+                    <p>${obj.description}</p>
+                    <p class="distance">Відстань: ${distLabel} св. років</p>
+                `;
+                list.appendChild(li);
+            });
+        } catch (error) {
+            console.error("Помилка завантаження даних:", error);
+        }
+    }
+    loadData("nearest");
+    </script>
 </body>
 </html>
