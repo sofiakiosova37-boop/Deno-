@@ -1,13 +1,13 @@
 import time
 class SpaceObject:
-    def __init__(self, name, body_type, magnitude, timestamp, ra, dec):
+    def __init__(self, name, body_type, magnitude, ra, dec):
         self.name = name
         self.body_type = body_type
         self.magnitude = magnitude
         self.priority = 0
         self.ra = ra   # довгота
         self.dec = dec # широта
-        self._counter = 0
+        self.timestamp = 0
 
 class BiDirectionalPriorityQueue:
     def __init__(self):
@@ -17,18 +17,26 @@ class BiDirectionalPriorityQueue:
     # Розрахунок пріорітету
     def _calculate_priority(self, obj):
         priority = 10 - obj.magnitude
-        if obj.dec > 50:
+        if obj.dec > 45:
             priority += 5
+        elif obj.dec < 0:
+            priority -= 3
+        if obj.body_type == "Planet":
+            priority += 7
+        elif obj.body_type == "Constellation":
+            priority += 2
         return priority
 
     def enqueue(self, obj):
         obj.priority = self._calculate_priority(obj)
-        self._elements.append(obj)
         obj.timestamp = self._counter
         self._counter += 1
+        self._elements.append(obj)
         print(f"-> Додано: {obj.name}")
 
     def peek(self, mode):
+        if not self._elements: 
+            return None
         if mode == "highest":
             return max(self._elements, key=lambda x: x.priority)
         elif mode == "lowest":
@@ -39,20 +47,14 @@ class BiDirectionalPriorityQueue:
             return max(self._elements, key=lambda x: x.timestamp)
             
     def dequeue(self, mode):
-        if mode == "highest":
-            obj = max(self._elements, key=lambda x: x.priority)
-        elif mode == "lowest":
-            obj = min(self._elements, key=lambda x: x.priority)
-        elif mode == "oldest":
-            obj = min(self._elements, key=lambda x: x.timestamp)
-        elif mode == "newest":
-            obj = max(self._elements, key=lambda x: x.timestamp)
-        self._elements.remove(obj)
+        obj = self.peek(mode)
+        if obj:
+            self._elements.remove(obj)
         return obj
             
     def display(self):
         print("\nПоточна черга:")
-        for obj in self._elements
+        for obj in self._elements:
             print(f"- {obj.name} (Тип: {obj.body_type}, Пріоритет: {obj.priority:.2f})")
 
 queue = BiDirectionalPriorityQueue()
