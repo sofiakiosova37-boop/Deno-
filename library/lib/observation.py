@@ -1,4 +1,3 @@
-import time
 class SpaceObject:
     def __init__(self, name, body_type, magnitude, ra, dec):
         self.name = name
@@ -34,23 +33,40 @@ class BiDirectionalPriorityQueue:
         self._elements.append(obj)
         print(f"-> Додано: {obj.name}")
 
-    def peek(self, mode):
-        if not self._elements: 
-            return None
-        if mode == "highest":
-            return max(self._elements, key=lambda x: x.priority)
-        elif mode == "lowest":
-            return min(self._elements, key=lambda x: x.priority)
-        elif mode == "oldest":
-            return min(self._elements, key=lambda x: x.timestamp)
-        elif mode == "newest":
-            return max(self._elements, key=lambda x: x.timestamp)
+    def _get_best_index(self, mode):
+        if not self._elements:
+            raise IndexError("Queue is empty")
+        target_idx = 0
+        for i in range(1, len(self._elements)):
+            current = self._elements[i]
+            best = self._elements[target_idx]
+            if mode == "highest" and current.priority > best.priority:
+                target_idx = i
+            elif mode == "lowest" and current.priority < best.priority:
+                target_idx = i
+            elif mode == "oldest" and current.timestamp < best.timestamp:
+                target_idx = i
+            elif mode == "newest" and current.timestamp > best.timestamp:
+                target_idx = i
+            else:
+                raise ValueError("Unknown mode")
+        return target_idx
+
+    def peek(self, mode="highest"):
+        idx = self._get_best_index(mode)
+        if idx is not None:
+            obj = self._elements[idx]
+            print(f"[PEEK] {mode}: {obj.name}")
+            return obj
+        return None
             
-    def dequeue(self, mode):
-        obj = self.peek(mode)
-        if obj:
-            self._elements.remove(obj)
-        return obj
+    def dequeue(self, mode="highest"):
+        idx = self._get_best_index(mode)
+        if idx is not None:
+            target = self._elements.pop(idx)
+            print(f"[DEQUEUE] {mode}: {target.name}")
+            return target
+        return None
             
     def display(self):
         print("\nПоточна черга:")
