@@ -36,6 +36,8 @@ class BiDirectionalPriorityQueue:
     def _get_best_index(self, mode):
         if not self._elements:
             raise IndexError("Queue is empty")
+        if mode not in ["highest", "lowest", "oldest", "newest"]:
+            raise ValueError("Unknown mode")
         target_idx = 0
         for i in range(1, len(self._elements)):
             current = self._elements[i]
@@ -48,8 +50,6 @@ class BiDirectionalPriorityQueue:
                 target_idx = i
             elif mode == "newest" and current.timestamp > best.timestamp:
                 target_idx = i
-            else:
-                raise ValueError("Unknown mode")
         return target_idx
 
     def peek(self, mode="highest"):
