@@ -1,12 +1,11 @@
 from flask import render_template
-import urllib2
+import requests 
 import json
 
-req = urllib2.Request("http://api.open-notify.org/iss-now.json")
-response = urllib2.urlopen(req)
-obj = json.loads(response.read())
+response = requests.get("http://api.open-notify.org/iss-now.json")
+obj = response.json()
 print(obj['timestamp'])
-print(obj['iss_position']['latitude'], obj['data']['iss_position']['latitude'])
+print(obj['iss_position']['latitude'], obj['iss_position']['longitude'])
 
 """
 async def iss_page():
