@@ -40,9 +40,9 @@ def logout():
 def solar():
     return render_template('solar.html')
 
-@app.route('/transit')  
+@app.route('/iss')  
 def transit():
-    return render_template('transit.html')
+    return render_template('iss.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
