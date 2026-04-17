@@ -33,6 +33,24 @@
                 clearTimeout(timeoutId);
                 signal.removeEventListener('abort');
             };
+
+            const onAbort = () => {
+                cleanup();
+                callback(new Error("AbortError"), null);
+            };
+
+            signal.addEventListener('abort', onAbort);
+
+            fetch('/api/iss-live', { signal })
+            .then(res => res.json())
+            .then(data => {
+                cleanup();
+                callback(null, data);
+            })
+            .catch(err => {
+                cleanup();
+                if (err.name !== 'AbortError') callback(err, null);
+            });
         }
 
         async function updateData() {

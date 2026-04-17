@@ -1,5 +1,4 @@
 from operator import itemgetter
-
 class Priority:
     def __init__(self):
         self.data = []
