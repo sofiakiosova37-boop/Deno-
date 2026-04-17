@@ -25,63 +25,50 @@
     <script>
         function fetchIssData(signal, callback) {
             const timeoutId = setTimeout(() => {
-                cleanup();
+                controller.abort();
                 callback(new Error("TimeoutError"), null);
             }, 5000);
-
+            const controller = new AbortController();
             const cleanup = () => {
                 clearTimeout(timeoutId);
-                signal.removeEventListener('abort');
+                signal.removeEventListener('abort', onAbort);
             };
-
             const onAbort = () => {
                 cleanup();
+                controller.abort();
                 callback(new Error("AbortError"), null);
             };
-
             signal.addEventListener('abort', onAbort);
-
-            fetch('/api/iss-live', { signal })
+            fetch('/api/iss-live', { signal: controller.signal })
             .then(res => res.json())
             .then(data => {
                 cleanup();
-                callback(null, data);
+                if (!signal.aborted) callback(null, data);
             })
             .catch(err => {
                 cleanup();
-                if (err.name !== 'AbortError') callback(err, null);
+                if (err.name === 'AbortError') return;
+                callback(err, null);
             });
         }
-        const mainController = new AbortController();
-
+        const mainSignal = new AbortController();
         async function updateData() {
-            const getDataPromise = () => {
-                return new Promise((resolve, reject) => {
-                    fetchIssData(mainController.signal, (err, data) => {
-                        if (err) reject(err);
-                        else resolve(data);
-                    });
-                });
-            };
-            try {
-                const data = await getDataPromise();
-                document.getElementById('lat').innerText = data.location.iss_position.latitude;
-                document.getElementById('lon').innerText = data.location.iss_position.longitude;
-                document.getElementById('count').innerText = data.crew.number;
-            } catch (error) {
-                if (error.message === "AbortError") {
-                    console.log("Запит скасовано");
-                } else {
-                    console.error("Помилка отримання даних:", error);
-                }
-        }
-    }
-    let issTimer = setInterval(updateData, 3000); 
-    window.addEventListener('beforeunload', () => {
-    clearInterval(issTimer); 
-    mainController.abort();
-    console.log("Моніторинг зупинено, ресурси очищено");
-});
+            fetchIssData(mainSignal.signal, (err, data) => {
+                if (err) {
+                    console.error("Роботу зупинено або помилка:", err.message);
+                return;
+            }
+            document.getElementById('lat').textContent = data.location.iss_position.latitude;
+            document.getElementById('lon').textContent = data.location.iss_position.longitude;
+            document.getElementById('count').textContent = data.crew.number;
+            });       
+            }
+            updateData();
+            let issTimer = setInterval(updateData, 3000); 
+            window.addEventListener('beforeunload', () => {
+            clearInterval(issTimer); 
+            mainSignal.abort();
+        });
     </script>
 
 </body>
