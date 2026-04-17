@@ -52,19 +52,35 @@
                 if (err.name !== 'AbortError') callback(err, null);
             });
         }
+        const mainController = new AbortController();
 
         async function updateData() {
+            const getDataPromise = () => {
+                return new Promise((resolve, reject) => {
+                    fetchIssData(mainController.signal, (err, data) => {
+                        if (err) reject(err);
+                        else resolve(data);
+                    });
+                });
+            };
             try {
+                const data = await getDataPromise();
                 document.getElementById('lat').innerText = data.location.iss_position.latitude;
                 document.getElementById('lon').innerText = data.location.iss_position.longitude;
                 document.getElementById('count').innerText = data.crew.number;
             } catch (error) {
-                console.error("Помилка:", error);
+                if (error.message === "AbortError") {
+                    console.log("Запит скасовано");
+                } else {
+                    console.error("Помилка отримання даних:", error);
+                }
         }
     }
     let issTimer = setInterval(updateData, 3000); 
     window.addEventListener('beforeunload', () => {
     clearInterval(issTimer); 
+    mainController.abort();
+    console.log("Моніторинг зупинено, ресурси очищено");
 });
     </script>
 
