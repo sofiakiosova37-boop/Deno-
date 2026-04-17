@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Щоденик астрофотографій | Asteria Space</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="Title">
+        <h1>Asteria Space</h1>
+        <h2>Цікаві астрономічні факти</h2>
+    </div>
+    <div class="Title">
+        <h1>Asteria Space</h1>
+        <h2>Цікаві астрономічні факти</h2>
+    </div>
+
+    <div class="controls">
+        <a href="{{ url_for('facts_bp.facts_page', sort='nearest') }}" class="button">Спочатку найближчі</a>
+        <a href="{{ url_for('facts_bp.facts_page', sort='farthest') }}" class="button">Спочатку найвіддаленіші</a>
+    </div>
+
+    <div id="facts-container"> 
+        {% for item in all_facts %}
+        <div class="fact-card" style="border: 1px solid #ccc; padding: 15px; margin: 10px; border-radius: 10px;">
+            <h3>{{ item.name }}</h3>
+            <p>{{ item.info }}</p>
+            <p><strong>Відстань:</strong> {{ item.distance }} св. р.</p>
+        </div>
+        {% endfor %}
+    </div>
+    
+    </body>
+</html>

@@ -3,12 +3,14 @@ import os
 from flask import Flask, render_template, request, redirect, session, jsonify
 from datetime import datetime
 from calcus import calcus_bp
+from facts import facts_bp
 
 # login
 app = Flask(__name__)
 app.secret_key = "solar_system_secret"
 
 app.register_blueprint(calcus_bp)
+app.register_blueprint(facts_bp)
 # сторінка входу
 @app.route("/", methods=["GET","POST"])
 def login():
@@ -37,10 +39,6 @@ def logout():
 @app.route('/solar')  
 def solar():
     return render_template('solar.html')
-
-@app.route('/diary')  
-def diary():
-    return render_template('diary.html')
 
 @app.route('/transit')  
 def transit():
