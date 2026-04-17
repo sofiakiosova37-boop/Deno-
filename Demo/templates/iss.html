@@ -23,26 +23,30 @@
     </div>
 
     <script>
+        function fetchIssData(signal, callback) {
+            const timeoutId = setTimeout(() => {
+                cleanup();
+                callback(new Error("TimeoutError"), null);
+            }, 5000);
+
+            const cleanup = () => {
+                clearTimeout(timeoutId);
+                signal.removeEventListener('abort');
+            };
+        }
+
         async function updateData() {
             try {
-                const response = await fetch('/api/iss-live');
-                const data = await response.json();
-                console.log("Отримані дані:", data); 
-                const lat = data.location.iss_position.latitude;
-                const lon = data.location.iss_position.longitude;
-                const number = data.crew.number;
-                document.getElementById('lat').innerText = lat;
-                document.getElementById('lon').innerText = lon;
-                document.getElementById('count').innerText = number;
+                document.getElementById('lat').innerText = data.location.iss_position.latitude;
+                document.getElementById('lon').innerText = data.location.iss_position.longitude;
+                document.getElementById('count').innerText = data.crew.number;
             } catch (error) {
                 console.error("Помилка:", error);
         }
     }
-   // updateData();
     let issTimer = setInterval(updateData, 3000); 
     window.addEventListener('beforeunload', () => {
     clearInterval(issTimer); 
-    console.log("Мониторинг ISS остановлен");
 });
     </script>
 
