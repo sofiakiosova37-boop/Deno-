@@ -12,36 +12,13 @@
         <h2>Цікаві астрономічні факти</h2>
     </div>
 
-    <div class="controls">
-        <button onclick="loadData('nearest')">Від найближчого</button>
-        <button onclick="loadData('farthest')">Від найдальшого</button>
+    <div class=>
+    <button onclick="loadFacts('nearest')">Спочатку найближчі</button>
+    <button onclick="loadFacts('farthest')">Спочатку найвіддаленіші</button>
     </div>
-
-    <ul id="list" style="padding: 0;"></ul>
-
-    <script>
-    async function loadData(order) {
-        try {
-            const res = await fetch(`/objects?order=${order}`);
-            const data = await res.json();
-            const list = document.getElementById("list");
-            list.innerHTML = "";
-            data.forEach(obj => {
-                const li = document.createElement("li");
-                li.className = "card";
-                let distLabel = obj.distance >= 1 ? obj.distance.toLocaleString() : obj.distance;
-                li.innerHTML = `
-                    <h3>${obj.name}</h3>
-                    <p>${obj.description}</p>
-                    <p class="distance">Відстань: ${distLabel} св. років</p>
-                `;
-                list.appendChild(li);
-            });
-        } catch (error) {
-            console.error("Помилка завантаження даних:", error);
-        }
-    }
-    loadData("nearest");
-    </script>
+    <div id="facts-container"> 
+        
+    </div> 
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

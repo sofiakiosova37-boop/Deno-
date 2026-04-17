@@ -1,35 +1,36 @@
-from fastapi import FastAPI, Request
-from fastapi.templating import Jinja2Templates
-
+import json
 class Facts:
-    def __init__(self, name, discription, distance):
+    def __init__(self, name, description, distance):
         self.name = name
-        self.discription = discription
+        self.description = description
         self.distance = distance
 
 class Priority:
+    def get_json_data(self, order="nearest"):
+        data = self.get_all(order)
+        return json.dumps(data, ensure_ascii=False)
+
     def __init__(self):
         self.data = []
 
-    def enqueue(self, item, priority_val):
-        self.data.append({"item": item, "priority": priority_val})
+    def enqueue(self, name, info, distance):
+        fact={
+            "name": name,
+            "info": info,
+            "distance": distance
+        }
+        self.data.append(fact)
 
-    def get_all(self, order="nearest"):
-        reverse_sort = True if order == "farthest" else False
-        sorted_data = sorted(self.data, key=lambda x: x['priority'], reverse=reverse_sort)
-        result = []
-        for d in sorted_data:
-            item = d['item']
-            item['priority'] = d['priority'] 
-            result.append(item)
-        return result
+    def get_sorted_list(self, order="nearest"):
+        def extract_distance(item):
+            return item['distance']
+        is_reverse = (order == "farthest")
+        return sorted(self.data, key=extract_distance, reverse=is_reverse)
     
     def display(self):
         print(f"\n--- СПИСОК ФАКТІВ (Завантажено: {len(self.data)}) ---")
-        for entry in self.data:
-            name = entry['item']['name'] 
-            priority = entry['priority']
-            print(f"{name}: {priority}")
+        for item in self.data:
+            print(f"{item['name']} — {item['distance']} св. р.")
 
 queue = Priority()
 queue.enqueue({"name": "Чорна діра TON 618", "info": "Це одна з наймасивніших чорних дір у Всесвіті. Її маса у 66 мільярдів разів перевищує масу Сонця. Якби вона була в центрі нашої системи, вона б поглинула все аж до орбіти Нептуна."}, 10400000000)
@@ -43,17 +44,5 @@ queue.enqueue({"name": "Гігантський Войд Волопаса (Boöte
 queue.enqueue({"name": "Олімп (Olympus Mons) на Марсi", "info": "Найвищий вулкан і гора в Сонячній системі. Його висота — 21,9 км, що майже втричі вище за Еверест. Він настільки великий, що його основа закрила б усю площу Франції"}, 0.00002)
 queue.enqueue({"name": "Магнітар", "info": "і поля.Цікавий факт: Це тип нейтронної зорі з найпотужнішим магнітним полем у Всесвіті. Якби магнітар знаходився на відстані половини шляху до Місяця, він би миттєво стер дані з усіх кредитних карток на Землі та розірвав би а"}, 50000)
 queue.display()
+json_output = queue.get_json_data()
 
-app = FastAPI()
-templates = Jinja2Templates(directory="templates")
-@app.get("/")
-def home(request: Request, order: str = "nearest"):
-    objects = queue.get_all(order)
-    return templates.TemplateResponse("diary.html", {
-        "request": request, 
-        "objects": objects,
-        "current_order": order
-    })
-@app.get("/objects")
-def get_objects(order: str = "nearest"):
-    return queue.get_all(order)
