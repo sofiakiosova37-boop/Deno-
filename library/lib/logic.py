@@ -4,14 +4,19 @@ from library.lib.memoization import LRU
 import time
 
 G = 6.67430e-11
+C = 299792458  # Швидкість світла
 
 def calculate_v1(mass, radius):
-    time.sleep(2)
     return round(math.sqrt((G*mass)/radius), 2)
 
 def calculate_v2(mass, radius):
-    time.sleep(2)
     return round(math.sqrt((2*G*mass)/radius), 2)
+
+def calculate_schwarzschild(mass):
+    return round((2*G*mass)/(C**2), 4)
+
+def calculate_gravity(mass, radius):
+    return round((G*mass)/(radius**2), 2)
 
 # Тимчасово для тестування
 limit = 5

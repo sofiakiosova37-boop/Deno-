@@ -1,4 +1,3 @@
-
 class Facts:
     def __init__(self, name, description, distance):
         self.name = name
