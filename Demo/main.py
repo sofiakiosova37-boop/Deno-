@@ -2,6 +2,7 @@ import sys
 import os
 from flask import Flask, render_template, request, redirect, session, jsonify
 from datetime import datetime
+import requests
 from calcus import calcus_bp
 from facts import facts_bp
 
@@ -42,7 +43,9 @@ def solar():
 
 @app.route('/iss')  
 def iss():
-    return render_template('iss.html')
+    location_res = requests.get("http://api.open-notify.org/iss-now.json").json()
+    crew_res = requests.get("http://api.open-notify.org/astros.json").json()
+    return render_template('iss.html', location=location_res, crew=crew_res)
 
 if __name__ == "__main__":
     app.run(debug=True)

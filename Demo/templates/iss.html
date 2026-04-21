@@ -10,12 +10,21 @@
         <h1>Центр відслідковування за ISS</h1>
     </div>
     <div class="container">
+        <div class="card">
         <h2>Координати</h2>
             {% if location %}
                 <p>Широта: {{location.iss_position.latitude}}</p>
                 <p>Довгота: {{location.iss_position.longitude}}</p>
             {% else %}
                 <p>Помилка завантаження координат</p>
+            {% endif %}
+        </div>
+        <div class="card">
+            <h2>Екіпаж МКС</h2>
+            {% if crew %}
+            <p>Зараз у космосі: <strong>{{ crew.number }}</strong> осіб</p>
+            {% else %}
+            <p>Дані про екіпаж недоступні</p>
             {% endif %}
         </div>
     </div>
