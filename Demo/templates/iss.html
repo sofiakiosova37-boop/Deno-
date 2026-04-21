@@ -7,5 +7,15 @@
 <body>
     <div class = "Title">
         <h1>Asteria Space</h1>
+        <h1>Центр відслідковування за ISS</h1>
     </div>
+    <div class="space-card">
+        <h2>Координати станом на зараз</h2>
+        <p>Широта: {{location.iss_position.latitude}}</p>
+        <p>Довгота: {{location.iss_position.longitude}}</p>
+    </div>
+    <div class="space-card">
+        <h2>Екіпажу в космосі (Усього зараз: {{crew.number}})</h2>
+    </div>
+</body>
 </html>

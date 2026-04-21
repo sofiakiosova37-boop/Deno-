@@ -41,7 +41,7 @@ def solar():
     return render_template('solar.html')
 
 @app.route('/iss')  
-def transit():
+def iss():
     return render_template('iss.html')
 
 if __name__ == "__main__":
