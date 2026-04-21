@@ -1,14 +1,21 @@
 from flask import render_template
-import requests 
+import asyncio
+import httpx
+import requests
 
-"""
-response = requests.get("http://api.open-notify.org/iss-now.json")
-obj = response.json()
-print(obj['timestamp'])
-print(obj['iss_position']['latitude'], obj['iss_position']['longitude'])
-"""
+async def map_async(coro_func, iterable):
+    tasks = [asyncio.create_task(coro_func(url)) for url in iterable]
+    return await asyncio.gather(*tasks)
 
-def iss_page():
-    location_res = requests.get("http://api.open-notify.org/iss-now.json").json()
-    crew_res = requests.get("http://api.open-notify.org/astros.json").json()
-    return render_template('iss.html', location=location_res, crew=crew_res)
+async def fetch_data(url):
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(url)
+        return resp.json()
+    
+async def iss_page():
+    urls = [
+        "http://open-notify.org", 
+        "http://open-notify.org"
+    ]
+    results = await map_async(fetch_data, urls)
+    return render_template('iss.html', location=results[0], crew=results[1])
