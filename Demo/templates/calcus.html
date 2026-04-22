@@ -10,8 +10,8 @@
         <h1>Астрономічні розрахунки</h1>
     </div>
     <form method="POST">
-        <input type="text" name="mass" placeholder="Маса планети (кг)" required>
-        <input type="text" name="radius" placeholder="Радіус планети (м)" required>
+        <input type="number" step="any" name="mass" placeholder="Маса об'єкта (кг)" required title="Маса потрібна для всіх розрахунків">
+        <input type="number" step="any" name="radius" placeholder="Радіус планети (м)" required title="Радіус потрібен для космічних швидкостей та g">
         <button type="submit">Розрахувати</button>
     </form>
 
@@ -22,6 +22,8 @@
             <h3>Результати для Маси: {{ result.mass }} та Радіуса: {{ result.radius }}</h3>
             <p><strong>Перша космічна швидкість:</strong> {{ result.v1 }} м/с</p>
             <p><strong>Друга космічна швидкість:</strong> {{ result.v2 }} м/с</p>
+            <p><strong>Радіус Шварцшильда:</strong> {{ result.rs }} м</p>
+            <p><strong>Сила тяжіння (g):</strong> {{ result.g }} м/с²</p>
         {% endif %}
     {% endif %}
 

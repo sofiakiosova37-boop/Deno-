@@ -23,6 +23,8 @@ limit = 5
 
 get_v1 = LRU(calculate_v1, max_size=limit, ttl=300) 
 get_v2 = LRU(calculate_v2, max_size=limit, ttl=300)
+get_sch = LRU(calculate_schwarzschild, max_size=limit, ttl=300) 
+get_grav = LRU(calculate_gravity, max_size=limit, ttl=300)
 
 if __name__ == "__main__":
     while True:
@@ -31,25 +33,38 @@ if __name__ == "__main__":
         r = float(input("Введіть радіус планети (м): "))
 
         start_time = time.time() 
-        key = (m, r) 
-        v1 = get_v1.get(key)
+        key_mr = (m, r) 
+        key_m = (m)
+        v1 = get_v1.get(key_mr)
         if v1 is None: 
             v1 = calculate_v1(m, r)
-            get_v1.put(key, v1) 
+            get_v1.put(key_mr, v1) 
 
-        v2 = get_v2.get(key)
+        v2 = get_v2.get(key_mr)
         if v2 is None:
             v2 = calculate_v2(m, r)
-            get_v2.put(key, v2)
+            get_v2.put(key_mr, v2)
+
+        rad = get_sch.get(key_m)
+        if rad is None:
+            rad = calculate_schwarzschild(m)
+            get_sch.put(key_m, rad)
+
+        g = get_grav.get(key_mr)
+        if g is None:
+            g = calculate_gravity(m, r)
+            get_grav.put(key_mr, g)
 
         duration = time.time() - start_time
 
         print(f"Перша космічна швидкість: {v1} м/с ")
         print(f"Друга космічна швидкість: {v2} м/с ")
-        print(f"Час виконання: {duration:.2f} сек") 
+        print(f"Радіус Шварцшильда: {rad} м")
+        print(f"Прискорення вільного падіння: {g} м/с²")
+        print(f"Час виконання: {duration:.4f} сек") 
 
-        meta1 = get_v1.metadata.get(key)
-        meta2 = get_v2.metadata.get(key)
+        meta1 = get_v1.metadata.get(key_mr)
+        meta2 = get_v2.metadata.get(key_mr)
         if meta1 and meta2:
             print(f"--- Статистика кешу для цієї планети ---")
             print(f"Кількість зчитувань (counts): Зчитувань V1: {meta1['count']} | Зчитувань V2: {meta2['count']}")
