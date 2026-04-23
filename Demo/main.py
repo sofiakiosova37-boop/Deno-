@@ -2,9 +2,9 @@ import sys
 import os
 from flask import Flask, render_template, request, redirect, session, jsonify
 from datetime import datetime
-import requests
 from calcus import calcus_bp
 from facts import facts_bp
+from iss import iss_bp 
 
 # login
 app = Flask(__name__)
@@ -12,6 +12,7 @@ app.secret_key = "solar_system_secret"
 
 app.register_blueprint(calcus_bp)
 app.register_blueprint(facts_bp)
+app.register_blueprint(iss_bp)
 # сторінка входу
 @app.route("/", methods=["GET","POST"])
 def login():
@@ -40,12 +41,6 @@ def logout():
 @app.route('/solar')  
 def solar():
     return render_template('solar.html')
-
-@app.route('/iss')  
-def iss():
-    location_res = requests.get("http://api.open-notify.org/iss-now.json").json()
-    crew_res = requests.get("http://api.open-notify.org/astros.json").json()
-    return render_template('iss.html', location=location_res, crew=crew_res)
 
 if __name__ == "__main__":
     app.run(debug=True)
