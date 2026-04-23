@@ -12,13 +12,35 @@
     <div class="container">
         <div class="card">
             <h3> Поточне місце</h3>
-            <p>Широта: </p>
-            <p>Довгота: </p>
+            <p>Широта:  <span id="lat" class="val">...</span></p>
+            <p>Довгота: <span id="lon" class="val">...</span></p>
         </div>
         <div class="card">
             <h3>Екіпаж на борту</h3>
             <p>Зараз у космосі:</p>
+            <span id="count" class="val">...</span>
         </div>
     </div>
+
+    <script>
+        async function updateData() {
+            try {
+                const response = await fetch('/api/iss-live');
+                const data = await response.json();
+                console.log("Отримані дані:", data); 
+                const lat = data.location.iss_position.latitude;
+                const lon = data.location.iss_position.longitude;
+                const number = data.crew.number;
+                document.getElementById('lat').innerText = lat;
+                document.getElementById('lon').innerText = lon;
+                document.getElementById('count').innerText = number;
+            } catch (error) {
+                console.error("Помилка:", error);
+        }
+    }
+    updateData();
+    setInterval(updateData, 3000); 
+    </script>
+
 </body>
 </html>

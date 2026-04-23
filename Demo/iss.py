@@ -10,7 +10,7 @@ async def map_async(coro_func, iterable):
 
 async def fetch_data(url):
     async with httpx.AsyncClient() as client:
-        resp = await client.get(url, timeout=2)
+        resp = await client.get(url, timeout=10)
         return resp.json()
 
 @iss_bp.route('/iss')
@@ -20,8 +20,8 @@ async def iss_page():
 @iss_bp.route('/api/iss-live')
 async def iss_live_data():
     urls = [
-        "http://open-notify.org", 
-        "http://open-notify.org"
+        "http://api.open-notify.org/iss-now.json",  
+        "http://api.open-notify.org/astros.json"
     ]
     results = await map_async(fetch_data, urls)
     return jsonify({"location": results[0], "crew": results[1]})
