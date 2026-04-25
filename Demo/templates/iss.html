@@ -38,8 +38,12 @@
                 console.error("Помилка:", error);
         }
     }
-    updateData();
-    setInterval(updateData, 3000); 
+   // updateData();
+    let issTimer = setInterval(updateData, 3000); 
+    window.addEventListener('beforeunload', () => {
+    clearInterval(issTimer); 
+    console.log("Мониторинг ISS остановлен");
+});
     </script>
 
 </body>
