@@ -16,14 +16,23 @@ class Priority:
         self.data.sort(key=itemgetter('distance', 'id'))
 
     def get_nearest(self):
-        return self.data[0] if self.data else None
+        if len(self.data) > 0:
+            return self.data[0]    
+        else:                        
+            return None
     
     def get_farthest(self):
-        return self.data[-1] if self.data else None
-    
+        if len(self.data) > 0:
+            return self.data[-1]
+        else:
+         return None
+
     def get_oldest(self):
-        if not self.data: return None
-        return min(self.data, key=itemgetter('id'))
+        if len(self.data) > 0:
+            result = min(self.data, key=itemgetter('id'))
+            return result
+        else:
+            return None
     
     def display(self):
         print(f"\n--- СПИСОК ФАКТІВ (Завантажено: {len(self.data)}) ---")
