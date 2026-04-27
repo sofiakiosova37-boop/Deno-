@@ -1,31 +1,35 @@
-class Facts:
-    def __init__(self, name, description, distance):
-        self.name = name
-        self.description = description
-        self.distance = distance
+from operator import itemgetter
 
 class Priority:
     def __init__(self):
         self.data = []
+        self._counter = 0
 
     def enqueue(self, name, info, distance):
+        self._counter += 1
         fact={
             "name": name,
             "info": info,
-            "distance": distance
+            "distance": distance,
+            "id": self._counter
         }
         self.data.append(fact)
+        self.data.sort(key=itemgetter('distance', 'id'))
 
-    def get_sorted_list(self, order="nearest"):
-        def extract_distance(item):
-            return item['distance']
-        is_reverse = (order == "farthest")
-        return sorted(self.data, key=extract_distance, reverse=is_reverse)
+    def get_nearest(self):
+        return self.data[0] if self.data else None
+    
+    def get_farthest(self):
+        return self.data[-1] if self.data else None
+    
+    def get_oldest(self):
+        if not self.data: return None
+        return min(self.data, key=itemgetter('id'))
     
     def display(self):
         print(f"\n--- СПИСОК ФАКТІВ (Завантажено: {len(self.data)}) ---")
         for item in self.data:
-            print(f"{item['name']} — {item['distance']} св. р.")
+            print(f"ID:{item['id']} | {item['name']} — {item['distance']} св. р.")
 
 queue = Priority()
 queue.enqueue("Чорна діра TON 618", "Це одна з наймасивніших чорних дір у Всесвіті. Її маса у 66 мільярдів разів перевищує масу Сонця. Якби вона була в центрі нашої системи, вона б поглинула все аж до орбіти Нептуна.", 10400000000)
