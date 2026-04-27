@@ -2,6 +2,7 @@ from operator import itemgetter
 class Priority:
     def __init__(self):
         self.data = []
+        self.priority = []
         self._counter = 0
 
     def enqueue(self, name, info, distance):
@@ -13,7 +14,18 @@ class Priority:
             "id": self._counter
         }
         self.data.append(fact)
-        self.data.sort(key=itemgetter('distance', 'id'))
+        self.time.append(fact)
+       # self.priority.append(fact)
+       # self.data.sort(key=itemgetter('distance', 'id'))
+    
+        index = len(self.priority)
+
+        for i in range (len(self.priority)):
+            if fact['distance'] < self.priority[i]['distance']:
+                index = i
+                break
+
+        self.priority.insert(index, fact)
 
     def get_nearest(self):
         if len(self.data) > 0:
