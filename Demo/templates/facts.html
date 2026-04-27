@@ -13,19 +13,20 @@
     </div>
 
     <div class="controls">
-        <a href="{{ url_for('facts_bp.facts_page', sort='nearest') }}" class="button">Спочатку найближчі</a>
-        <a href="{{ url_for('facts_bp.facts_page', sort='farthest') }}" class="button">Спочатку найвіддаленіші</a>
+        <a href="/facts?sort=nearest">Найближчі</a> | 
+        <a href="/facts?sort=farthest">Найвіддаленіші</a> | 
+        <a href="/facts?sort=newest">Останні додані</a>
     </div>
 
-    <div id="facts-container"> 
-        {% for item in all_facts %}
-        <div class="fact-card" style="border: 1px solid #ccc; padding: 15px; margin: 10px; border-radius: 10px;">
-            <h3>{{ item.name }}</h3>
-            <p>{{ item.info }}</p>
-            <p><strong>Відстань:</strong> {{ item.distance }} св. р.</p>
-        </div>
+    <table>
+        {% for fact in all_facts %}
+        <tr>
+            <td>{{ fact.name }}</td>
+            <td>{{ fact.distance }} св. р.</td>
+            <td>{{ fact.info }}</td>
+        </tr>
         {% endfor %}
-    </div>
+    </table>
     
     </body>
 </html>

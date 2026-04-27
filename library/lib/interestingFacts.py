@@ -4,6 +4,7 @@ class Priority:
         self.data = []
         self.priority = []
         self._counter = 0
+        self.time = []
 
     def enqueue(self, name, info, distance):
         self._counter += 1
@@ -19,13 +20,21 @@ class Priority:
        # self.data.sort(key=itemgetter('distance', 'id'))
     
         index = len(self.priority)
-
         for i in range (len(self.priority)):
             if fact['distance'] < self.priority[i]['distance']:
                 index = i
                 break
-
         self.priority.insert(index, fact)
+
+    def get_sorted_list(self, order='nearest'):
+        if order == 'nearest':
+            return self.priority
+        elif order == 'farthest':
+            return self.priority[::-1]
+        elif order == 'newest':
+            return sorted(self.data, key=itemgetter('id'), reverse=True)
+        else:
+            return self.data
 
     def get_nearest(self):
         if len(self.data) > 0:

@@ -11,4 +11,4 @@ def facts_page():
         return redirect("/")
     sort_order = request.args.get('sort', 'nearest')
     list_of_facts = queue.get_sorted_list(order=sort_order)
-    return render_template('facts.html', all_facts=list_of_facts)
+    return render_template('facts.html', all_facts=list_of_facts, current_sort=sort_order)
