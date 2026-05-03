@@ -29,21 +29,44 @@ class Priority:
         self.priority.insert(index, fact)
 
     def streamcsv(self, file_path):
-        with open(file_path, mode='r', encoding='utf-8') as file:
-            reader = csv.DictReader(file)
-            for row in reader:
-                fact = {
-                    "id": int(row['id']),
-                    "name": row['name'],
-                    "distance": float(row['distance']),
-                    "info": row['info']
-                }
-                yield fact
+        try:
+            with open(file_path, mode='r', encoding='utf-8') as file:
+                reader = csv.DictReader(file)
+                for row in reader:
+                    try:
+                        fact = {
+                            "id": int(row['id']),
+                            "name": row['name'],
+                            "distance": float(row['distance']),
+                            "info": row['info']
+                        }
+                        yield fact
+                    except (ValueError, KeyError) as e:
+                        print(f"Помилка в даних рядка: {e}")
+                        continue
+        except FileNotFoundError:
+            print(f"файл не знайдено")
+            raise
 
     def process_large_data(self, file_path, max_dist=1000):
+        count = 0
+        try:
+            for fact in self.streamcsv(file_path):
+                if fact['distance'] <= max_dist:
+                    print(f"Знайдено в потоці: {fact['name']} — {fact['distance']} св. р.")
+                    count += 1
+                if count == 0:
+                    print("  [!] Об'єктів на такій відстані не знайдено.")
+        except Exception as e:
+            print(f"Критична помилка потоку: {e}")
+            raise
+
+    def load_filtered_data(self, file_path, max_dist=100000):
+        added_count = 0
         for fact in self.streamcsv(file_path):
             if fact['distance'] <= max_dist:
-                print(f"Знайдено в потоці: {fact['name']} — {fact['distance']} св. р.")
+                self.enqueue(fact['name'], fact['info'], fact['distance'])
+                added_count += 1
 
     def get_sorted_list(self, order='nearest'):
         if order == 'nearest':
@@ -80,8 +103,6 @@ class Priority:
             print(f"ID:{item['id']} | {item['name']} — {item['distance']} св. р.")
 
 queue = Priority()
-try:
-    queue.process_large_data('facts.csv', max_dist=10000)
-except FileNotFoundError:
-    print("\n[!] Файл facts.csv не знайдено")
+queue.load_filtered_data('facts.csv', max_dist=50000)
+queue.display()
 
