@@ -1,5 +1,9 @@
 import csv
 from operator import itemgetter
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CSV_PATH = os.path.join(BASE_DIR, 'facts.csv')
 
 class Priority:
     def __init__(self):
@@ -103,6 +107,9 @@ class Priority:
             print(f"ID:{item['id']} | {item['name']} — {item['distance']} св. р.")
 
 queue = Priority()
-queue.load_filtered_data('facts.csv', max_dist=50000)
+try:
+    queue.load_filtered_data('facts.csv', max_dist=50000)
+except FileNotFoundError:
+    print(f"\n[!] Файл не знайдено за шляхом: {CSV_PATH}")
 queue.display()
 

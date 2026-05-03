@@ -13,9 +13,18 @@
     </div>
 
     <div class="controls">
-        <a href="/facts?sort=nearest">Найближчі</a> | 
-        <a href="/facts?sort=farthest">Найвіддаленіші</a> | 
-        <a href="/facts?sort=newest">Останні додані</a>
+        <a href="/facts?sort=nearest&max_dist={{ current_max_dist or '' }}">Найближчі</a> | 
+        <a href="/facts?sort=farthest&max_dist={{ current_max_dist or '' }}">Найвіддаленіші</a> | 
+        <a href="/facts?sort=newest&max_dist={{ current_max_dist or '' }}">Останні додані</a>
+    </div>
+
+    <div class="filter-controls">
+        <form action="/facts" method="get">
+            <label for="max_dist">Показати об'єкти до (св. р.):</label>
+            <input type="number" name="max_dist" value="{{ current_max_dist or 50000 }}">
+            <input type="hidden" name="sort" value="{{ current_sort }}">
+            <button type="submit">Застосувати фільтр (Stream)</button>
+        </form>
     </div>
 
     <table>
