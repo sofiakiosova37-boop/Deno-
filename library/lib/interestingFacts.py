@@ -1,5 +1,6 @@
 import csv
 from operator import itemgetter
+
 class Priority:
     def __init__(self):
         self.data = []
@@ -26,6 +27,18 @@ class Priority:
                 index = i
                 break
         self.priority.insert(index, fact)
+
+    def streamcsv(self, file_path):
+        with open(file_path, mode='r', encoding='utf-8') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                fact = {
+                    "id": int(row['id']),
+                    "name": row['name'],
+                    "distance": float(row['distance']),
+                    "info": row['info']
+                }
+                yield fact
 
     def get_sorted_list(self, order='nearest'):
         if order == 'nearest':
