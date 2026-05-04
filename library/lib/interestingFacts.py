@@ -33,19 +33,19 @@ class Priority:
         self.priority.insert(index, fact)
 
     def streamcsv(self, file_path):
-            with open(file_path, mode='r', encoding='utf-8') as file:
-                reader = csv.DictReader(file)
-                for row in reader:
-                    try:
-                        fact = {
-                            "id": int(row['id']),
-                            "name": row['name'],
-                            "distance": float(row['distance']),
-                            "info": row['info']
-                        }
-                        yield fact
-                    except (ValueError, KeyError) as e:
-                        raise ValueError(f"Invalid row: {row}") from e
+        with open(file_path, mode='r', encoding='utf-8') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                try:
+                    fact = {
+                        "id": int(row['id']),
+                        "name": row['name'],
+                        "distance": float(row['distance']),
+                        "info": row['info']
+                    }
+                    yield fact
+                except (ValueError, KeyError) as e:
+                    raise ValueError(f"Invalid row: {row}") from e
 
     def process_large_data(self, file_path, max_dist=1000):
         count = 0
