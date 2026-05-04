@@ -13,6 +13,7 @@ def log(level="INFO"):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            return process_log(func, args, kwargs)
+            start_time = time.perf_counter()
+            timestamp = datetime.now().isoformat()
         return wrapper
     return decorator
