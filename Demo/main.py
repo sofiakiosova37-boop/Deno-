@@ -5,6 +5,7 @@ from datetime import datetime
 from calcus import calcus_bp
 from facts import facts_bp
 from iss import iss_bp 
+import logging
 
 # login
 app = Flask(__name__)
@@ -42,6 +43,14 @@ def logout():
 def solar():
     return render_template('solar.html')
 
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(message)s',
+    handlers=[
+        logging.FileHandler("app_log.json"),
+        logging.StreamHandler()
+    ]
+)
 if __name__ == "__main__":
     app.run(debug=True)
 

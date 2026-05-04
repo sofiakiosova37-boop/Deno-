@@ -70,7 +70,7 @@ class Priority:
         except Exception as e: 
             print(f"Помилка завантаження даних: {e}")
             raise
-
+    
     def get_sorted_list(self, order='nearest'):
         if order == 'nearest':
             return self.priority

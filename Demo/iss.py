@@ -1,6 +1,7 @@
 from flask import render_template, jsonify, Blueprint
 import asyncio
 import httpx
+from library.lib.my_decorator import log
 
 iss_bp = Blueprint('iss_bp', __name__, template_folder='templates')
 
@@ -8,6 +9,7 @@ async def map_async(coro_func, iterable):
     tasks = [asyncio.create_task(coro_func(url)) for url in iterable]
     return await asyncio.gather(*tasks)
 
+@log(level="DEBUG")
 async def fetch_data(url):
     async with httpx.AsyncClient() as client:
         resp = await client.get(url, timeout=10)
