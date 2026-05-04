@@ -33,7 +33,6 @@ class Priority:
         self.priority.insert(index, fact)
 
     def streamcsv(self, file_path):
-        try:
             with open(file_path, mode='r', encoding='utf-8') as file:
                 reader = csv.DictReader(file)
                 for row in reader:
@@ -46,11 +45,7 @@ class Priority:
                         }
                         yield fact
                     except (ValueError, KeyError) as e:
-                        print(f"Помилка в даних рядка: {e}")
-                        continue
-        except FileNotFoundError:
-            print(f"файл не знайдено")
-            raise
+                        raise ValueError(f"Invalid row: {row}") from e
 
     def process_large_data(self, file_path, max_dist=1000):
         count = 0
@@ -59,18 +54,22 @@ class Priority:
                 if fact['distance'] <= max_dist:
                     print(f"Знайдено в потоці: {fact['name']} — {fact['distance']} св. р.")
                     count += 1
-                if count == 0:
-                    print("  [!] Об'єктів на такій відстані не знайдено.")
+            if count == 0:
+                print(" не знайдено.")
         except Exception as e:
             print(f"Критична помилка потоку: {e}")
             raise
 
     def load_filtered_data(self, file_path, max_dist=100000):
         added_count = 0
-        for fact in self.streamcsv(file_path):
-            if fact['distance'] <= max_dist:
-                self.enqueue(fact['name'], fact['info'], fact['distance'])
-                added_count += 1
+        try:
+            for fact in self.streamcsv(file_path):
+                if fact['distance'] <= max_dist:
+                    self.enqueue(fact['name'], fact['info'], fact['distance'])
+                    added_count += 1
+        except Exception as e: 
+            print(f"Помилка завантаження даних: {e}")
+            raise
 
     def get_sorted_list(self, order='nearest'):
         if order == 'nearest':
