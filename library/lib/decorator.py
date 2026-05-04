@@ -5,34 +5,24 @@ import json
 import logging
 import asyncio
 from datetime import datetime
+import inspect
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-def log(level="INFO", structured=False):
+def log(level="INFO"):
     def decorator(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            start_time = time.perf_counter()
-            timestamp = datetime.now().isoformat()
-            try:
-                result = func(*args, **kwargs)
-                exec_time = time.perf_counter() - start_time
-                if level != "ERROR":
-                    log_entry = {
-                        "ts": timestamp,
-                        "level": level,
-                        "func": func.__name__,
-                        "args": args,
-                        "res": result,
-                        "time": f"{exec_time:.5f}s"
-                    }
-                    msg = json.dumps(log_entry) if structured else f"[{timestamp}] {level}: {func.__name__}({args}) -> {result} в течение {exec_time:.5f}s"
-                    logger.info(msg)
-                return result
-            except Exception as e:
-                err_msg = f"[{timestamp}] ERROR: {func.__name__} failed: {e}"
-                logger.error(err_msg)
-                raise e
+        if inspect.iscoroutinefunction(func):
+            @functools.wraps(func)
+            async def wrapper(*args, **kwargs):
+                return await _process_logging(func, args, kwargs, level, True)
+        else:
+            @functools.wraps(func)
+            def wrapper(*args, **kwargs):
+                return _process_logging(func, args, kwargs, level, False)
         return wrapper
     return decorator
+
+def _process_logging(func, args, kwargs, level, is_async):
+    start_time = time.perf_counter()
+    timestamp = datetime.now().isoformat()
