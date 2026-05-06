@@ -7,7 +7,6 @@ from facts import facts_bp
 from iss import iss_bp 
 import logging
 
-# login
 app = Flask(__name__)
 app.secret_key = "solar_system_secret"
 
@@ -19,14 +18,12 @@ app.register_blueprint(iss_bp)
 def login():
     if request.method == "POST":
         nickname = request.form.get("nickname")
-        # для збереження ніка в сесії
         session["user"] = nickname
-        # записуємо у файл
         with open("visitors.txt","a",encoding="utf-8") as f:
             f.write(f"{nickname} | {datetime.now()}\n")
         return redirect("/menu")
     return render_template("login.html")
-# головне меню
+
 @app.route("/menu")
 def menu():
     if "user" not in session:
