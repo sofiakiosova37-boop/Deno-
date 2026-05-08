@@ -1,4 +1,4 @@
-class SpaceObject:
+"""class SpaceObject:
     def __init__(self, name, body_type, magnitude, ra, dec):
         self.name = name
         self.body_type = body_type
@@ -79,4 +79,4 @@ queue.enqueue(SpaceObject("Jupiter", "Planet", -2.50, 2, 18.5, -23.0))
 queue.enqueue(SpaceObject("Aldebaran", "Star", +0.85, 3, 4.60, +16.5))
 queue.enqueue(SpaceObject("Cassiopeia", "Constellation", +2.00, 4, 1.00, +60.0))
 queue.enqueue(SpaceObject("Mars", "Planet", -0.50, 5, 15.2, -18.0))
-queue.display()
+queue.display()"""
