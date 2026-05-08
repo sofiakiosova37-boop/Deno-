@@ -8,3 +8,7 @@ CSV_PATH = os.path.join(BASE_DIR, 'news.csv')
 class AstroEventsEmitter:
     def __init__(self):
         self._listeners = {}
+
+def notification(data):
+    print(f"Подія: {data['info']}")
+    print(f"Дата: {data['day']} {data['month']} {data['year']}")
