@@ -28,3 +28,13 @@ def news(file_path, emitter):
                 emitter.emit(row)
     except FileNotFoundError:
         print("Error")
+
+if __name__ == "__main__":
+    emitter = AstroEventsEmitter()
+    emitter.subscribe(notification)
+    try:
+        while True:
+            news(CSV_PATH, emitter)
+            time.sleep(5)
+    except KeyboardInterrupt:
+        print("\nPostponed")
