@@ -64,7 +64,7 @@
             });       
             }
             updateData();
-            let issTimer = setInterval(updateData, 3000); 
+            let issTimer = setInterval(updateData, 2000); 
             window.addEventListener('beforeunload', () => {
             clearInterval(issTimer); 
             mainSignal.abort();
