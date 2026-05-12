@@ -11,5 +11,8 @@ Frontend: Jinja2 Templates, HTML, CSS, JavaScript (Three.js)
 Database: CSV file
 APIs: NASA Open API, OpenNotify (ISS Tracker)
 
+Observation
+![Page of Login](static/image/loginPage.png)
+
 📜 License
 This project is licensed under the MIT License
