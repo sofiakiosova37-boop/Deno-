@@ -19,7 +19,7 @@
 ![Solar System 3D 2](./Demo/static/image/solar2.png)
 ![Solar System 3D 3](./Demo/static/image/solar3.png)
 ![Solar System 3D 4](./Demo/static/image/solar4.png)
-![Calcus Page](./Demo/static/image/calcus.png)
+![Calcus Page](./Demo/static/image/calcusPage.png)
 ![Facts Page 1](./Demo/static/image/factsPage1.png)
 ![Facts Page 2](./Demo/static/image/factsPage2.png)
 ![Facts Page 3](./Demo/static/image/factsPage3.png)
