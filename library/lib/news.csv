@@ -1,9 +1,9 @@
-id, year, month, day, info
-1, 2026, may, 11, meteor shower peak
-2, 2026, may, 14, Superior Solar Conjunction: Mercury
-3, 2026, may, 17, Occulation Pleides
-4, 2026, may, 18, Close approach of Mercury and Uranus
-5, 2026, may, 20, Conjunction: Jupiter and moon
-6, 2026, june, 1, Moon at Apogee
-7, 2026, june, 9, Moon is close to Neptune
-8, 2026, june, 12, Moon is close to Mars
+id,year,month,day,info
+1, 2026,may,11,meteor shower peak
+2, 2026,may,14,Superior Solar Conjunction: Mercury
+3, 2026,may,17,Occulation Pleides
+4, 2026,may,18,Close approach of Mercury and Uranus
+5, 2026,may,20,Conjunction: Jupiter and moon
+6, 2026,june,1,Moon at Apogee
+7, 2026,june,9,Moon is close to Neptune
+8, 2026,june,12,Moon is close to Mars

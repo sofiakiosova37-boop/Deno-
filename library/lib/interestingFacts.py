@@ -3,7 +3,7 @@ from operator import itemgetter
 import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-CSV_PATH = os.path.join(BASE_DIR, 'facts.csv')
+FACTS_CSV_PATH = os.path.join(BASE_DIR, 'facts.csv')
 
 class Priority:
     def __init__(self):
@@ -107,8 +107,8 @@ class Priority:
 
 queue = Priority()
 try:
-    queue.load_filtered_data('facts.csv', max_dist=50000)
+    queue.load_filtered_data(FACTS_CSV_PATH, max_dist=50000)
 except FileNotFoundError:
-    print(f"\n[!] Файл не знайдено за шляхом: {CSV_PATH}")
+    print(f"\n[!] Файл не знайдено за шляхом: {FACTS_CSV_PATH}")
 queue.display()
 

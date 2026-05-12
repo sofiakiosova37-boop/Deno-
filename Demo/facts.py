@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from flask import Blueprint, render_template, request, session, redirect
-from library.lib.interestingFacts import queue, CSV_PATH
+from library.lib.interestingFacts import queue, FACTS_CSV_PATH
 
 facts_bp = Blueprint('facts_bp', __name__)
 @facts_bp.route('/facts')
@@ -14,9 +14,9 @@ def facts_page():
     if max_dist is not None:
         queue.data = []
         queue.priority = []
-        queue.load_filtered_data(CSV_PATH, max_dist=max_dist)
+        queue.load_filtered_data(FACTS_CSV_PATH, max_dist=max_dist)
     if not queue.data and max_dist is None:
-        queue.load_filtered_data(CSV_PATH, max_dist=50000)
+        queue.load_filtered_data(FACTS_CSV_PATH, max_dist=50000)
 
     list_of_facts = queue.get_sorted_list(order=sort_order)
     return render_template('facts.html', all_facts=list_of_facts, current_sort=sort_order, current_max_dist=max_dist)

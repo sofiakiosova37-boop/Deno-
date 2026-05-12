@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Щоденик астрофотографій | Asteria Space</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="Title">
+        <h1>Asteria Space</h1>
+        <h1>Останні астрономічні новини</h1>
+    </div>
+    <h1>Список событий</h1>
+    <div id="news-container"></div>
+    <script>
+        let lastNewsCount = 0;
+        function fetchNews() {
+            fetch('/api/news')
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById('news-container');
+                    if (data.length > lastNewsCount && lastNewsCount !== 0) {
+                        alert("Появились новые события!");
+                    }
+                    container.innerHTML = '';
+                    data.forEach(item => {
+                        const div = document.createElement('div');
+                        const year = item.year || item[' year'];
+                        const month = item.month || item[' month'];
+                        const day = item.day || item[' day'];
+                        const info = item.info || item[' info'];
+                        div.innerHTML = `
+                            <div class="news-item">
+                                <h3>${info}</h3>
+                                <p>${day} ${month} ${year}</p>
+                                <hr>
+                            </div>
+                        `;
+                        container.appendChild(div);
+                    });
+                    lastNewsCount = data.length;
+                });
+        }
+        setInterval(fetchNews, 5000);
+        fetchNews();
+    </script>
+</body>
+</html>

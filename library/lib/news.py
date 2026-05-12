@@ -3,7 +3,7 @@ import os
 import time
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-CSV_PATH = os.path.join(BASE_DIR, 'news.csv')
+NEWS_CSV_PATH = os.path.join(BASE_DIR, 'news.csv')
 
 class AstroEventsEmitter:
     def __init__(self):
@@ -29,12 +29,23 @@ def news(file_path, emitter):
     except FileNotFoundError:
         print("Error")
 
+def get_all_news(file_path):
+    news_list = []
+    try:
+        with open(file_path, mode='r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                news_list.append(row)
+    except FileNotFoundError:
+        pass
+    return news_list
+
 if __name__ == "__main__":
     emitter = AstroEventsEmitter()
     emitter.subscribe(notification)
     try:
         while True:
-            news(CSV_PATH, emitter)
+            news(NEWS_CSV_PATH, emitter)
             time.sleep(5)
     except KeyboardInterrupt:
         print("\nPostponed")
