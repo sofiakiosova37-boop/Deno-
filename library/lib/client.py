@@ -19,3 +19,12 @@ class IssService:
     async def get_data(self, url):
         response = await self._http.request("GET", url)
         return response.json()
+    
+class ApiKeyStrategy:
+    def __init__(self, key):
+        self.key = key
+    def apply(self, kwargs):
+        params = kwargs.get('params', {})
+        params['api_key'] = self.key
+        kwargs['params'] = params
+        return kwargs
