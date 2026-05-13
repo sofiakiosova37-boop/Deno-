@@ -9,7 +9,13 @@ class AuthProxy:
     def __init__(self, inner_client, auth_strategy):
         self._client = inner_client 
         self._strategy = auth_strategy
-
     async def request(self, method, url, **kwargs):
         kwargs = self._strategy.apply(kwargs)
         return await self._client.request(method, url, **kwargs)
+    
+class IssService:
+    def __init__(self, http_client):
+        self._http = http_client 
+    async def get_data(self, url):
+        response = await self._http.request("GET", url)
+        return response.json()
