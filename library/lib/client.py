@@ -1,7 +1,6 @@
-from abc import ABC, abstractmethod
 import httpx
 
-class HttpClient(ABC):
-    @abstractmethod
-    async def request(self, method: str, url: str, **kwargs) -> httpx.Response:
-        pass
+class BaseHttpClient:
+    async def request(self, method, url, **kwargs):
+        async with httpx.AsyncClient() as client:
+            return await client.request(method, url, **kwargs)
