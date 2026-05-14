@@ -15,7 +15,7 @@ app.register_blueprint(calcus_bp)
 app.register_blueprint(facts_bp)
 app.register_blueprint(iss_bp)
 app.register_blueprint(news_bp)
-# сторінка входу
+
 @app.route("/", methods=["GET","POST"])
 def login():
     if request.method == "POST":
@@ -32,7 +32,6 @@ def menu():
         return redirect("/")
     return render_template("index.html", user=session["user"])
 
-# вихід
 @app.route("/logout")
 def logout():
     session.clear()
